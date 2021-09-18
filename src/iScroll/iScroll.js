@@ -353,7 +353,6 @@
 			preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
 	
 			HWCompositing: true,
-			useTransition: true,
 			useTransform: true,
 			bindToWrapper: typeof window.onmousedown === "undefined"
 		};
@@ -365,7 +364,6 @@
 		// Normalize options
 		this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
 
-		this.options.useTransition = utils.hasTransition && this.options.useTransition;
 		this.options.useTransform = utils.hasTransform && this.options.useTransform;
 	
 		this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
@@ -388,17 +386,13 @@
 		}
 	
 		// https://github.com/cubiq/iscroll/issues/1029
-		if (!this.options.useTransition && !this.options.useTransform) {
+		if (!this.options.useTransform) {
 			if(!(/relative|absolute/i).test(this.scrollerStyle.position)) {
 				this.scrollerStyle.position = "relative";
 			}
 		}
 	
 		this.options.invertWheelDirection = this.options.invertWheelDirection ? -1 : 1;
-	
-		if ( this.options.probeType == 3 ) {
-			this.options.useTransition = false;	
-		}
 	
 		// INSERT POINT: NORMALIZATION
 	
@@ -476,13 +470,7 @@
 	
 			this.startTime = utils.getTime();
 	
-			if ( this.options.useTransition && this.isInTransition ) {
-				this._transitionTime();
-				this.isInTransition = false;
-				pos = this.getComputedPosition();
-				this._translate(Math.round(pos.x), Math.round(pos.y));
-				this._execEvent('scrollEnd');
-			} else if ( !this.options.useTransition && this.isAnimating ) {
+			if (this.isAnimating ) {
 				this.isAnimating = false;
 				this._execEvent('scrollEnd');
 			}
@@ -620,7 +608,6 @@
 				time = 0,
 				easing = undefined;
 	
-			this.isInTransition = 0;
 			this.initiated = 0;
 			this.endTime = utils.getTime();
 	
@@ -657,7 +644,6 @@
 				newX = momentumX.destination;
 				newY = momentumY.destination;
 				time = Math.max(momentumX.duration, momentumY.duration);
-				this.isInTransition = 1;
 			}
 	
 			// INSERT POINT: _end
@@ -857,50 +843,6 @@
 			time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x-pos.left), Math.abs(this.y-pos.top)) : time;
 	
 			this.scrollTo(pos.left, pos.top, time, easing);
-		},
-	
-		_transitionTime: function (time) {
-			if (!this.options.useTransition) {
-				return;
-			}
-			time = time || 0;
-			var durationProp = utils.style.transitionDuration;
-			if(!durationProp) {
-				return;
-			}
-	
-			this.scrollerStyle[durationProp] = time + 'ms';
-	
-			if ( !time && utils.isBadAndroid ) {
-				this.scrollerStyle[durationProp] = '0.0001ms';
-				// remove 0.0001ms
-				var self = this;
-				rAF(function() {
-					if(self.scrollerStyle[durationProp] === '0.0001ms') {
-						self.scrollerStyle[durationProp] = '0s';
-					}
-				});
-			}
-	
-	
-			if ( this.indicators ) {
-				for ( var i = this.indicators.length; i--; ) {
-					this.indicators[i].transitionTime(time);
-				}
-			}
-			// INSERT POINT: _transitionTime
-	
-		},
-	
-		_transitionTimingFunction: function (easing) {
-			this.scrollerStyle[utils.style.transitionTimingFunction] = easing;
-	
-	
-			if ( this.indicators ) {
-				for ( var i = this.indicators.length; i--; ) {
-					this.indicators[i].transitionTimingFunction(easing);
-				}
-			}
 		},
 	
 		_translate: function (x, y) {
