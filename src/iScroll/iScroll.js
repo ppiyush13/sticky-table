@@ -364,7 +364,7 @@
 	
 		// Normalize options
 		this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
-	
+
 		this.options.useTransition = utils.hasTransition && this.options.useTransition;
 		this.options.useTransform = utils.hasTransform && this.options.useTransform;
 	
@@ -434,18 +434,6 @@
 			clearTimeout(this.resizeTimeout);
 			this.resizeTimeout = null;
 			this._execEvent('destroy');
-		},
-	
-		_transitionEnd: function (e) {
-			if ( e.target != this.scroller || !this.isInTransition ) {
-				return;
-			}
-	
-			this._transitionTime();
-			if ( !this.resetPosition(this.options.bounceTime) ) {
-				this.isInTransition = false;
-				this._execEvent('scrollEnd');
-			}
 		},
 	
 		_start: function (e) {
@@ -630,7 +618,7 @@
 				distanceX = Math.abs(newX - this.startX),
 				distanceY = Math.abs(newY - this.startY),
 				time = 0,
-				easing = '';
+				easing = undefined;
 	
 			this.isInTransition = 0;
 			this.initiated = 0;
@@ -689,9 +677,7 @@
 	
 		_resize: function () {
 			var that = this;
-	
 			clearTimeout(this.resizeTimeout);
-	
 			this.resizeTimeout = setTimeout(function () {
 				that.refresh();
 			}, this.options.resizePolling);
@@ -739,7 +725,7 @@
 			this.wrapperHeight	= this.wrapper.clientHeight;
 	
 			var rect = utils.getRect(this.scroller);
-	/* REPLACE START: refresh */
+			/* REPLACE START: refresh */
 	
 			this.scrollerWidth	= rect.width;
 			this.scrollerHeight	= rect.height;
@@ -747,7 +733,7 @@
 			this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
 			this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
 	
-	/* REPLACE END: refresh */
+			/* REPLACE END: refresh */
 	
 			this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 			this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
@@ -782,7 +768,7 @@
 	
 			this.resetPosition();
 	
-	// INSERT POINT: _refresh
+			// INSERT POINT: _refresh
 	
 		},	
 	
@@ -831,19 +817,12 @@
 			this.scrollTo(x, y, time, easing);
 		},
 	
-		scrollTo: function (x, y, time, easing) {
-			easing = easing || utils.ease.circular;
-	
-			this.isInTransition = this.options.useTransition && time > 0;
-			var transitionType = this.options.useTransition && easing.style;
-			if ( !time || transitionType ) {
-					if(transitionType) {
-						this._transitionTimingFunction(easing.style);
-						this._transitionTime(time);
-					}
-				this._translate(x, y);
-			} else {
+		scrollTo: function (x, y, time, easing = utils.ease.circular) {
+			if(time) {
 				this._animate(x, y, time, easing.fn);
+			}
+			else {
+				this._translate(x, y);
 			}
 		},
 	
@@ -909,9 +888,7 @@
 					this.indicators[i].transitionTime(time);
 				}
 			}
-	
-	
-	// INSERT POINT: _transitionTime
+			// INSERT POINT: _transitionTime
 	
 		},
 	
@@ -929,7 +906,6 @@
 		_translate: function (x, y) {
 			this.x = x;
 			this.y = y;
-			//console.log(x,y);
 			this.wrapper.scrollTo(x * -1, y);
 		},
 	
@@ -964,27 +940,6 @@
 				eventType(target, 'touchcancel', this);
 				eventType(target, 'touchend', this);
 			}
-	
-			eventType(this.scroller, 'transitionend', this);
-			eventType(this.scroller, 'webkitTransitionEnd', this);
-			eventType(this.scroller, 'oTransitionEnd', this);
-			eventType(this.scroller, 'MSTransitionEnd', this);
-		},
-	
-		getComputedPosition: function () {
-			var matrix = window.getComputedStyle(this.scroller, null),
-				x, y;
-	
-			if ( this.options.useTransform ) {
-				matrix = matrix[utils.style.transform].split(')')[0].split(', ');
-				x = +(matrix[12] || matrix[4]);
-				y = +(matrix[13] || matrix[5]);
-			} else {
-				x = +matrix.left.replace(/[^-\d.]/g, '');
-				y = +matrix.top.replace(/[^-\d.]/g, '');
-			}
-	
-			return { x: x, y: y };
 		},
 	
 		_initKeys: function (e) {
@@ -1007,13 +962,6 @@
 				prevTime = this.keyTime || 0,
 				acceleration = 0.250,
 				pos;
-
-			if ( this.options.useTransition && this.isInTransition ) {
-				pos = this.getComputedPosition();
-
-				this._translate(Math.round(pos.x), Math.round(pos.y));
-				this.isInTransition = false;
-			}
 
 			this.keyAcceleration = now - prevTime < 200 ? Math.min(this.keyAcceleration + acceleration, 50) : 0;
 
@@ -1127,12 +1075,6 @@
 				case 'orientationchange':
 				case 'resize':
 					this._resize();
-					break;
-				case 'transitionend':
-				case 'webkitTransitionEnd':
-				case 'oTransitionEnd':
-				case 'MSTransitionEnd':
-					this._transitionEnd(e);
 					break;
 				case 'keydown':
 					this._key(e);
