@@ -353,7 +353,6 @@
 			preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
 	
 			HWCompositing: true,
-			useTransform: true,
 			bindToWrapper: typeof window.onmousedown === "undefined"
 		};
 	
@@ -364,7 +363,6 @@
 		// Normalize options
 		this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
 
-		this.options.useTransform = utils.hasTransform && this.options.useTransform;
 	
 		this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
 		this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
@@ -383,13 +381,6 @@
 	
 		if ( this.options.tap === true ) {
 			this.options.tap = 'tap';
-		}
-	
-		// https://github.com/cubiq/iscroll/issues/1029
-		if (!this.options.useTransform) {
-			if(!(/relative|absolute/i).test(this.scrollerStyle.position)) {
-				this.scrollerStyle.position = "relative";
-			}
 		}
 	
 		this.options.invertWheelDirection = this.options.invertWheelDirection ? -1 : 1;
