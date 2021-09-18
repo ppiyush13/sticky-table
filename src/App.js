@@ -126,9 +126,7 @@ export const App = () => {
   return (
     <Styles>
       <div style={{height: 100}}>Before table</div>
-      <>
         <div {...getTableProps()} className="table sticky" style={{  }}>
-          <>
             <div className={"header"} ref={headerRef}>
               {headerGroups.map((headerGroup) => (
                 <div {...headerGroup.getHeaderGroupProps()} className="tr">
@@ -140,16 +138,10 @@ export const App = () => {
                 </div>
               ))}
             </div>
-          </>
-          <>
-            <div >
               <div ref={ref}  className={"body"} {...getTableBodyProps()} >
                 <Rows virutal rows={rows} prepareRow={prepareRow}/>
               </div>
-            </div>
-          </>
         </div>
-      </>
     </Styles>
   );
 }
