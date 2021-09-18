@@ -91,14 +91,10 @@
 			};
 		};
 	
-		var _transform = _prefixStyle('transform');
 	
 		me.extend(me, {
-			hasTransform: _transform !== false,
-			hasPerspective: _prefixStyle('perspective') in _elementStyle,
 			hasTouch: 'ontouchstart' in window,
 			hasPointer: !!(window.PointerEvent || window.MSPointerEvent), // IE10 is prefixed
-			hasTransition: _prefixStyle('transition') in _elementStyle
 		});
 	
 		/*
@@ -131,7 +127,6 @@
 		})();
 	
 		me.extend(me.style = {}, {
-			transform: _transform,
 			transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
 			transitionDuration: _prefixStyle('transitionDuration'),
 			transitionDelay: _prefixStyle('transitionDelay'),
@@ -352,7 +347,6 @@
 			preventDefault: true,
 			preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
 	
-			HWCompositing: true,
 			bindToWrapper: typeof window.onmousedown === "undefined"
 		};
 	
@@ -361,9 +355,6 @@
 		}
 	
 		// Normalize options
-		this.translateZ = this.options.HWCompositing && utils.hasPerspective ? ' translateZ(0)' : '';
-
-	
 		this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
 		this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
 	
