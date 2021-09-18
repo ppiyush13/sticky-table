@@ -21,6 +21,7 @@ export default function IScroll(el, options) {
     keyBindings: false,
     arrowKeyDisplacement: 40,
 
+    // INSERT POINT: OPTIONS
     disablePointer: !hasPointer,
     disableTouch: hasPointer || !hasTouch,
     disableMouse: hasPointer || hasTouch,
@@ -34,28 +35,51 @@ export default function IScroll(el, options) {
     bounceEasing: 'circular',
 
     preventDefault: true,
-    preventDefaultException: {
-      tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/,
-    },
+    preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
 
     bindToWrapper: typeof window.onmousedown === 'undefined',
     ...options,
   };
 
-  this.options.preventDefault = false;
-  this.options.scrollY = false;
-  this.options.scrollX = true;
-  this.options.freeScroll = false;
-  this.options.directionLockThreshold = 0;
+  // Normalize options
+  this.options.eventPassthrough =
+    this.options.eventPassthrough === true
+      ? 'vertical'
+      : this.options.eventPassthrough;
+  this.options.preventDefault =
+    !this.options.eventPassthrough && this.options.preventDefault;
+
+  // If you want eventPassthrough I have to lock one of the axes
+  this.options.scrollY =
+    this.options.eventPassthrough === 'vertical' ? false : this.options.scrollY;
+  this.options.scrollX =
+    this.options.eventPassthrough === 'horizontal'
+      ? false
+      : this.options.scrollX;
+
+  // With eventPassthrough we also need lockDirection mechanism
+  this.options.freeScroll =
+    this.options.freeScroll && !this.options.eventPassthrough;
+  this.options.directionLockThreshold = this.options.eventPassthrough
+    ? 0
+    : this.options.directionLockThreshold;
+
   this.options.bounceEasingFn = easeFns[this.options.bounceEasing];
-  this.options.resizePolling = 60;
-  this.options.invertWheelDirection = 1;
+
+  this.options.resizePolling =
+    this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
+
+  this.options.invertWheelDirection = this.options.invertWheelDirection
+    ? -1
+    : 1;
+
   // INSERT POINT: NORMALIZATION
 
   // Some defaults
   this.x = 0;
   this.y = 0;
   this.directionX = 0;
+  this.directionY = 0;
   this._events = {};
 
   // INSERT POINT: DEFAULTS
@@ -68,10 +92,17 @@ export default function IScroll(el, options) {
 }
 
 IScroll.prototype = {
+  version: '5.2.0-snapshot',
+
   _init: function () {
     this._initEvents();
-    this._initWheel();
-    this._initKeys();
+
+    if (this.options.mouseWheel) {
+      this._initWheel();
+    }
+    if (this.options.keyBindings) {
+      this._initKeys();
+    }
   },
 
   destroy: function () {
@@ -110,6 +141,7 @@ IScroll.prototype = {
     this.distX = 0;
     this.distY = 0;
     this.directionX = 0;
+    this.directionY = 0;
     this.directionLocked = 0;
 
     this.startTime = getTime();
@@ -204,6 +236,7 @@ IScroll.prototype = {
     }
 
     this.directionX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
+    this.directionY = deltaY > 0 ? -1 : deltaY < 0 ? 1 : 0;
 
     if (!this.moved) {
       this._execEvent('scrollStart');
@@ -399,6 +432,7 @@ IScroll.prototype = {
 
     this.endTime = 0;
     this.directionX = 0;
+    this.directionY = 0;
 
     if (hasPointer && !this.options.disablePointer) {
       // The wrapper should have `touchAction` property for using pointerEvent.
@@ -622,6 +656,7 @@ IScroll.prototype = {
     newY = this.y + Math.round(this.hasVerticalScroll ? wheelDeltaY : 0);
 
     this.directionX = wheelDeltaX > 0 ? -1 : wheelDeltaX < 0 ? 1 : 0;
+    this.directionY = wheelDeltaY > 0 ? -1 : wheelDeltaY < 0 ? 1 : 0;
 
     if (newX > 0) {
       newX = 0;

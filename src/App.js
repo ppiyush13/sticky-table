@@ -109,8 +109,8 @@ export const App = () => {
     });
 
     iscroller.on('translate', (x, y) => {
-      headerRef.current.scrollTo(x, 0);
-      el.scrollTo(x, 0);
+      headerRef.current.scrollTo(x, y);
+      el.scrollTo(x, y);
     });
   }, [ref]);
 
