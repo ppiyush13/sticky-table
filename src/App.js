@@ -196,6 +196,7 @@ export const App = () => {
       probeType: 3,
       preventDefault: false,
       interactiveScrollbars: false,
+      keyBindings: true,
     });
     // iscroller.on('scroll', (event) => {
     //   console.log(event);
