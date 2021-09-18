@@ -7,12 +7,11 @@ import { offset, getRect } from './offset';
 import { easeFns } from './ease-fns';
 
 export default function IScroll (el, options) {
-	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
+	this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
 	this.scroller = this.wrapper.children[0];
 	this.scrollerStyle = this.scroller.style;		// cache style for better performance
 
 	this.options = {
-
 		keyBindings: false,
 		arrowKeyDisplacement: 40, 
 
@@ -32,20 +31,17 @@ export default function IScroll (el, options) {
 		preventDefault: true,
 		preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
 
-		bindToWrapper: typeof window.onmousedown === "undefined"
+		bindToWrapper: typeof window.onmousedown === "undefined",
+		...options,
 	};
-
-	for ( var i in options ) {
-		this.options[i] = options[i];
-	}
 
 	// Normalize options
 	this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
 	this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
 
 	// If you want eventPassthrough I have to lock one of the axes
-	this.options.scrollY = this.options.eventPassthrough == 'vertical' ? false : this.options.scrollY;
-	this.options.scrollX = this.options.eventPassthrough == 'horizontal' ? false : this.options.scrollX;
+	this.options.scrollY = this.options.eventPassthrough === 'vertical' ? false : this.options.scrollY;
+	this.options.scrollX = this.options.eventPassthrough === 'horizontal' ? false : this.options.scrollX;
 
 	// With eventPassthrough we also need lockDirection mechanism
 	this.options.freeScroll = this.options.freeScroll && !this.options.eventPassthrough;
@@ -99,14 +95,14 @@ IScroll.prototype = {
 
 	_start: function (e) {
 		// React to left mouse button only
-		if ( eventType[e.type] != 1 ) {
+		if ( eventType[e.type] !== 1 ) {
 			// for button property
 			// http://unixpapa.com/js/mouse.html
 			var button;
 		if (!e.which) {
 			/* IE case */
 			button = (e.button < 2) ? 0 :
-					((e.button == 4) ? 1 : 2);
+					((e.button === 4) ? 1 : 2);
 		} else {
 			/* All others */
 			button = e.button;
@@ -124,8 +120,7 @@ IScroll.prototype = {
 			e.preventDefault();
 		}
 
-		var point = e.touches ? e.touches[0] : e,
-			pos;
+		var point = e.touches ? e.touches[0] : e;
 
 		this.initiated	= eventType[e.type];
 		this.moved		= false;
@@ -192,19 +187,19 @@ IScroll.prototype = {
 			}
 		}
 
-		if ( this.directionLocked == 'h' ) {
-			if ( this.options.eventPassthrough == 'vertical' ) {
+		if ( this.directionLocked === 'h' ) {
+			if ( this.options.eventPassthrough === 'vertical' ) {
 				e.preventDefault();
-			} else if ( this.options.eventPassthrough == 'horizontal' ) {
+			} else if ( this.options.eventPassthrough === 'horizontal' ) {
 				this.initiated = false;
 				return;
 			}
 
 			deltaY = 0;
-		} else if ( this.directionLocked == 'v' ) {
-			if ( this.options.eventPassthrough == 'horizontal' ) {
+		} else if ( this.directionLocked === 'v' ) {
+			if ( this.options.eventPassthrough === 'horizontal' ) {
 				e.preventDefault();
-			} else if ( this.options.eventPassthrough == 'vertical' ) {
+			} else if ( this.options.eventPassthrough === 'vertical' ) {
 				this.initiated = false;
 				return;
 			}
@@ -243,7 +238,7 @@ IScroll.prototype = {
 			this.startX = this.x;
 			this.startY = this.y;
 
-			if ( this.options.probeType == 1 ) {
+			if ( this.options.probeType === 1 ) {
 				this._execEvent('scroll');
 			}
 		}
@@ -264,8 +259,7 @@ IScroll.prototype = {
 			e.preventDefault();
 		}
 
-		var point = e.changedTouches ? e.changedTouches[0] : e,
-			momentumX,
+		var momentumX,
 			momentumY,
 			duration = getTime() - this.startTime,
 			newX = Math.round(this.x),
@@ -307,7 +301,7 @@ IScroll.prototype = {
 
 		// INSERT POINT: _end
 
-		if ( newX != this.x || newY != this.y ) {
+		if ( newX !== this.x || newY !== this.y ) {
 			// change easing function when scroller goes out of the boundaries
 			if ( newX > 0 || newX < this.maxScrollX || newY > 0 || newY < this.maxScrollY ) {
 				easing = easeFns.quadratic;
@@ -654,8 +648,7 @@ IScroll.prototype = {
 			newY = this.y,
 			now = getTime(),
 			prevTime = this.keyTime || 0,
-			acceleration = 0.250,
-			pos;
+			acceleration = 0.250;
 
 		this.keyAcceleration = now - prevTime < 200 ? Math.min(this.keyAcceleration + acceleration, 50) : 0;
 
@@ -733,7 +726,7 @@ IScroll.prototype = {
 				window.requestAnimationFrame(step);
 			}
 
-			if ( that.options.probeType == 3 ) {
+			if ( that.options.probeType === 3 ) {
 				that._execEvent('scroll');
 			}
 		}
@@ -784,6 +777,8 @@ IScroll.prototype = {
 					e.stopPropagation();
 				}
 				break;
+			default:
+				return;
 		}
 	}
 };

@@ -107,7 +107,6 @@ export const App = () => {
       // disableMouse: false,
       // disablePointer: false,
       // disableTouch: false,
-      click: true,
       mouseWheel: true,
       scrollX: true,
       freeScroll: false,

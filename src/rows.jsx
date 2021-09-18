@@ -1,4 +1,4 @@
-import { Virtuoso, GroupedVirtuoso } from 'react-virtuoso';
+import { Virtuoso } from 'react-virtuoso';
 
 export const Rows = ({ virtual, rows, prepareRow,   }) => {
     const rowRenderer = (index, ...args)=>{
