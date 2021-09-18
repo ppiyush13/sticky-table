@@ -193,9 +193,7 @@ export const App = () => {
       bounce: true, // disable bounce because we're already customizing positioning
       scrollX: true,
       freeScroll: false,
-      scrollbars: false,
       probeType: 3,
-      mouseWheel: true,
       preventDefault: false,
       interactiveScrollbars: false,
     });

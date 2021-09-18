@@ -320,11 +320,6 @@
 		this.scrollerStyle = this.scroller.style;		// cache style for better performance
 	
 		this.options = {
-
-			resizeScrollbars: true,
-	
-			mouseWheelSpeed: 20,
-	
 			snapThreshold: 0.334,
 	
 			// INSERT POINT: OPTIONS
@@ -386,14 +381,11 @@
 			}
 		}
 	
-		if ( this.options.shrinkScrollbars == 'scale' ) {
-			this.options.useTransition = false;
-		}
-	
 		this.options.invertWheelDirection = this.options.invertWheelDirection ? -1 : 1;
 	
 		if ( this.options.probeType == 3 ) {
-			this.options.useTransition = false;	}
+			this.options.useTransition = false;	
+		}
 	
 		// INSERT POINT: NORMALIZATION
 	
@@ -418,15 +410,7 @@
 	
 		_init: function () {
 			this._initEvents();
-	
-			if ( this.options.scrollbars || this.options.indicators ) {
-				//this._initIndicators();
-			}
-	
-			if ( this.options.mouseWheel ) {
-				//this._initWheel();
-			}
-	
+			
 			if ( this.options.snap ) {
 				this._initSnap();
 			}
