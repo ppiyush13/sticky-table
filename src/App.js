@@ -113,7 +113,13 @@ export const App = () => {
       probeType: 3,
       keyBindings: true,
       eventPassthrough: 'vertical',
+      onTranslate: (x) => {
+        headerRef.current.scrollTo(x, 0);
+        el.scrollTo(x, 0);
+      }
     });
+
+
   }, [ref]);
 
   // Render the UI for your table

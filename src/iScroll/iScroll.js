@@ -503,7 +503,8 @@ IScroll.prototype = {
 	_translate: function (x, y) {
 		this.x = x;
 		this.y = y;
-		this.wrapper.scrollTo(x * -1, y);
+		this.options.onTranslate(x * -1, y);
+		//this.wrapper.scrollTo(x * -1, y);
 	},
 
 	_initEvents: function (remove) {
