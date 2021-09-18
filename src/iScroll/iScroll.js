@@ -125,12 +125,8 @@
 				return false;
 			}
 		})();
-	
+
 		me.extend(me.style = {}, {
-			transitionTimingFunction: _prefixStyle('transitionTimingFunction'),
-			transitionDuration: _prefixStyle('transitionDuration'),
-			transitionDelay: _prefixStyle('transitionDelay'),
-			transformOrigin: _prefixStyle('transformOrigin'),
 			touchAction: _prefixStyle('touchAction')
 		});
 	
@@ -348,6 +344,11 @@
 	
 			bindToWrapper: typeof window.onmousedown === "undefined"
 		};
+		console.log({
+			disablePointer : !utils.hasPointer,
+			disableTouch : utils.hasPointer || !utils.hasTouch,
+			disableMouse : utils.hasPointer || utils.hasTouch,
+		});
 	
 		for ( var i in options ) {
 			this.options[i] = options[i];
@@ -399,6 +400,10 @@
 		_init: function () {
 			this._initEvents();
 
+
+			if ( this.options.mouseWheel ) {
+				this._initWheel();
+			}
 			if ( this.options.keyBindings ) {
 				this._initKeys();
 			}
@@ -866,6 +871,97 @@
 				eventType(target, 'touchend', this);
 			}
 		},
+
+		_initWheel: function () {
+			utils.addEvent(this.wrapper, 'wheel', this);
+			utils.addEvent(this.wrapper, 'mousewheel', this);
+			utils.addEvent(this.wrapper, 'DOMMouseScroll', this);
+	
+			this.on('destroy', function () {
+				clearTimeout(this.wheelTimeout);
+				this.wheelTimeout = null;
+				utils.removeEvent(this.wrapper, 'wheel', this);
+				utils.removeEvent(this.wrapper, 'mousewheel', this);
+				utils.removeEvent(this.wrapper, 'DOMMouseScroll', this);
+			});
+		},
+	
+		_wheel: function (e) {
+			if ( !this.enabled ) {
+				return;
+			}
+	
+			var wheelDeltaX, wheelDeltaY,
+				newX, newY,
+				that = this;
+	
+			if ( this.wheelTimeout === undefined ) {
+				that._execEvent('scrollStart');
+			}
+	
+			// Execute the scrollEnd event after 400ms the wheel stopped scrolling
+			clearTimeout(this.wheelTimeout);
+			this.wheelTimeout = setTimeout(function () {
+				if(!that.options.snap) {
+					that._execEvent('scrollEnd');
+				}
+				that.wheelTimeout = undefined;
+			}, 400);
+	
+			if ( 'deltaX' in e ) {
+				if (e.deltaMode === 1) {
+					wheelDeltaX = -e.deltaX * this.options.mouseWheelSpeed;
+					wheelDeltaY = -e.deltaY * this.options.mouseWheelSpeed;
+				} else {
+					wheelDeltaX = -e.deltaX;
+					wheelDeltaY = -e.deltaY;
+				}
+			} else if ( 'wheelDeltaX' in e ) {
+				wheelDeltaX = e.wheelDeltaX / 120 * this.options.mouseWheelSpeed;
+				wheelDeltaY = e.wheelDeltaY / 120 * this.options.mouseWheelSpeed;
+			} else if ( 'wheelDelta' in e ) {
+				wheelDeltaX = wheelDeltaY = e.wheelDelta / 120 * this.options.mouseWheelSpeed;
+			} else if ( 'detail' in e ) {
+				wheelDeltaX = wheelDeltaY = -e.detail / 3 * this.options.mouseWheelSpeed;
+			} else {
+				return;
+			}
+	
+			wheelDeltaX *= this.options.invertWheelDirection;
+			wheelDeltaY *= this.options.invertWheelDirection;
+
+			
+			if(wheelDeltaX === 0 && !this.hasHorizontalScroll) return
+			else if(wheelDeltaX === 0 && !this.hasVerticalScroll) return
+			
+			e.preventDefault();
+	
+			newX = this.x + Math.round(this.hasHorizontalScroll ? wheelDeltaX : 0);
+			newY = this.y + Math.round(this.hasVerticalScroll ? wheelDeltaY : 0);
+	
+			this.directionX = wheelDeltaX > 0 ? -1 : wheelDeltaX < 0 ? 1 : 0;
+			this.directionY = wheelDeltaY > 0 ? -1 : wheelDeltaY < 0 ? 1 : 0;
+	
+			if ( newX > 0 ) {
+				newX = 0;
+			} else if ( newX < this.maxScrollX ) {
+				newX = this.maxScrollX;
+			}
+	
+			if ( newY > 0 ) {
+				newY = 0;
+			} else if ( newY < this.maxScrollY ) {
+				newY = this.maxScrollY;
+			}
+	
+			this.scrollTo(newX, newY, 0);
+	
+			if ( this.options.probeType > 1 ) {
+				this._execEvent('scroll');
+			}
+	
+	// INSERT POINT: _wheel
+		},
 	
 		_initKeys: function (e) {
 			// default key bindings
@@ -997,6 +1093,11 @@
 				case 'mousecancel':
 					this._end(e);
 					break;
+				case 'wheel':
+					case 'DOMMouseScroll':
+					case 'mousewheel':
+						this._wheel(e);
+						break;
 				case 'orientationchange':
 				case 'resize':
 					this._resize();
