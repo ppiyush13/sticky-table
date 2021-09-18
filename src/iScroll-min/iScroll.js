@@ -1,19 +1,19 @@
-import { keyMap, getTime } from "./utils";
-import { vendorStyles } from "./vendor-styles";
+import { keyMap, getTime } from './utils';
+import { vendorStyles } from './vendor-styles';
 import {
   addEvent,
   removeEvent,
   preventDefaultException,
   getTouchAction,
   eventType,
-} from "./event";
-import { momentum } from "./momentum";
-import { hasPointer, hasTouch } from "./sniff-feature";
-import { offset, getRect } from "./offset";
-import { easeFns } from "./ease-fns";
+} from './event';
+import { momentum } from './momentum';
+import { hasPointer, hasTouch } from './sniff-feature';
+import { offset, getRect } from './offset';
+import { easeFns } from './ease-fns';
 
 export default function IScroll(el, options) {
-  this.wrapper = typeof el === "string" ? document.querySelector(el) : el;
+  this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
   this.scroller = this.wrapper.children[0];
   this.scrollerStyle = this.scroller.style; // cache style for better performance
 
@@ -21,7 +21,6 @@ export default function IScroll(el, options) {
     keyBindings: false,
     arrowKeyDisplacement: 40,
 
-    // INSERT POINT: OPTIONS
     disablePointer: !hasPointer,
     disableTouch: hasPointer || !hasTouch,
     disableMouse: hasPointer || hasTouch,
@@ -32,54 +31,31 @@ export default function IScroll(el, options) {
     momentum: true,
 
     bounceTime: 600,
-    bounceEasing: "circular",
+    bounceEasing: 'circular',
 
     preventDefault: true,
-    preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
+    preventDefaultException: {
+      tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/,
+    },
 
-    bindToWrapper: typeof window.onmousedown === "undefined",
+    bindToWrapper: typeof window.onmousedown === 'undefined',
     ...options,
   };
 
-  // Normalize options
-  this.options.eventPassthrough =
-    this.options.eventPassthrough === true
-      ? "vertical"
-      : this.options.eventPassthrough;
-  this.options.preventDefault =
-    !this.options.eventPassthrough && this.options.preventDefault;
-
-  // If you want eventPassthrough I have to lock one of the axes
-  this.options.scrollY =
-    this.options.eventPassthrough === "vertical" ? false : this.options.scrollY;
-  this.options.scrollX =
-    this.options.eventPassthrough === "horizontal"
-      ? false
-      : this.options.scrollX;
-
-  // With eventPassthrough we also need lockDirection mechanism
-  this.options.freeScroll =
-    this.options.freeScroll && !this.options.eventPassthrough;
-  this.options.directionLockThreshold = this.options.eventPassthrough
-    ? 0
-    : this.options.directionLockThreshold;
-
+  this.options.preventDefault = false;
+  this.options.scrollY = false;
+  this.options.scrollX = true;
+  this.options.freeScroll = false;
+  this.options.directionLockThreshold = 0;
   this.options.bounceEasingFn = easeFns[this.options.bounceEasing];
-
-  this.options.resizePolling =
-    this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
-
-  this.options.invertWheelDirection = this.options.invertWheelDirection
-    ? -1
-    : 1;
-
+  this.options.resizePolling = 60;
+  this.options.invertWheelDirection = 1;
   // INSERT POINT: NORMALIZATION
 
   // Some defaults
   this.x = 0;
   this.y = 0;
   this.directionX = 0;
-  this.directionY = 0;
   this._events = {};
 
   // INSERT POINT: DEFAULTS
@@ -92,40 +68,23 @@ export default function IScroll(el, options) {
 }
 
 IScroll.prototype = {
-  version: "5.2.0-snapshot",
-
   _init: function () {
     this._initEvents();
-
-    if (this.options.mouseWheel) {
-      this._initWheel();
-    }
-    if (this.options.keyBindings) {
-      this._initKeys();
-    }
+    this._initWheel();
+    this._initKeys();
   },
 
   destroy: function () {
     this._initEvents(true);
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = null;
-    this._execEvent("destroy");
+    this._execEvent('destroy');
   },
 
   _start: function (e) {
-    // React to left mouse button only
     if (eventType[e.type] !== 1) {
-      // for button property
-      // http://unixpapa.com/js/mouse.html
-      var button;
-      if (!e.which) {
-        /* IE case */
-        button = e.button < 2 ? 0 : e.button === 4 ? 1 : 2;
-      } else {
-        /* All others */
-        button = e.button;
-      }
-      if (button !== 0) {
+      // React to left mouse button only
+      if (e.button !== 0) {
         return;
       }
     }
@@ -144,21 +103,20 @@ IScroll.prototype = {
       e.preventDefault();
     }
 
-    var point = e.touches ? e.touches[0] : e;
+    const point = e.touches ? e.touches[0] : e;
 
     this.initiated = eventType[e.type];
     this.moved = false;
     this.distX = 0;
     this.distY = 0;
     this.directionX = 0;
-    this.directionY = 0;
     this.directionLocked = 0;
 
     this.startTime = getTime();
 
     if (this.isAnimating) {
       this.isAnimating = false;
-      this._execEvent("scrollEnd");
+      this._execEvent('scrollEnd');
     }
 
     this.startX = this.x;
@@ -168,7 +126,7 @@ IScroll.prototype = {
     this.pointX = point.pageX;
     this.pointY = point.pageY;
 
-    this._execEvent("beforeScrollStart");
+    this._execEvent('beforeScrollStart');
   },
 
   _move: function (e) {
@@ -181,14 +139,11 @@ IScroll.prototype = {
       e.preventDefault();
     }
 
-    var point = e.touches ? e.touches[0] : e,
-      deltaX = point.pageX - this.pointX,
-      deltaY = point.pageY - this.pointY,
-      timestamp = getTime(),
-      newX,
-      newY,
-      absDistX,
-      absDistY;
+    const point = e.touches ? e.touches[0] : e;
+    const timestamp = getTime();
+    let deltaX = point.pageX - this.pointX;
+    let deltaY = point.pageY - this.pointY;
+    let newX, newY, absDistX, absDistY;
 
     this.pointX = point.pageX;
     this.pointY = point.pageY;
@@ -206,27 +161,27 @@ IScroll.prototype = {
     // If you are scrolling in one direction lock the other
     if (!this.directionLocked && !this.options.freeScroll) {
       if (absDistX > absDistY + this.options.directionLockThreshold) {
-        this.directionLocked = "h"; // lock horizontally
+        this.directionLocked = 'h'; // lock horizontally
       } else if (absDistY >= absDistX + this.options.directionLockThreshold) {
-        this.directionLocked = "v"; // lock vertically
+        this.directionLocked = 'v'; // lock vertically
       } else {
-        this.directionLocked = "n"; // no lock
+        this.directionLocked = 'n'; // no lock
       }
     }
 
-    if (this.directionLocked === "h") {
-      if (this.options.eventPassthrough === "vertical") {
+    if (this.directionLocked === 'h') {
+      if (this.options.eventPassthrough === 'vertical') {
         e.preventDefault();
-      } else if (this.options.eventPassthrough === "horizontal") {
+      } else if (this.options.eventPassthrough === 'horizontal') {
         this.initiated = false;
         return;
       }
 
       deltaY = 0;
-    } else if (this.directionLocked === "v") {
-      if (this.options.eventPassthrough === "horizontal") {
+    } else if (this.directionLocked === 'v') {
+      if (this.options.eventPassthrough === 'horizontal') {
         e.preventDefault();
-      } else if (this.options.eventPassthrough === "vertical") {
+      } else if (this.options.eventPassthrough === 'vertical') {
         this.initiated = false;
         return;
       }
@@ -249,10 +204,9 @@ IScroll.prototype = {
     }
 
     this.directionX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
-    this.directionY = deltaY > 0 ? -1 : deltaY < 0 ? 1 : 0;
 
     if (!this.moved) {
-      this._execEvent("scrollStart");
+      this._execEvent('scrollStart');
     }
 
     this.moved = true;
@@ -266,12 +220,12 @@ IScroll.prototype = {
       this.startY = this.y;
 
       if (this.options.probeType === 1) {
-        this._execEvent("scroll");
+        this._execEvent('scroll');
       }
     }
 
     if (this.options.probeType > 1) {
-      this._execEvent("scroll");
+      this._execEvent('scroll');
     }
     /* REPLACE END: _move */
   },
@@ -310,7 +264,7 @@ IScroll.prototype = {
 
     // we scrolled less than 10 pixels
     if (!this.moved) {
-      this._execEvent("scrollCancel");
+      this._execEvent('scrollCancel');
       return;
     }
 
@@ -320,7 +274,7 @@ IScroll.prototype = {
       distanceX < 100 &&
       distanceY < 100
     ) {
-      this._execEvent("flick");
+      this._execEvent('flick');
       return;
     }
 
@@ -368,7 +322,7 @@ IScroll.prototype = {
       return;
     }
 
-    this._execEvent("scrollEnd");
+    this._execEvent('scrollEnd');
   },
 
   _resize: function () {
@@ -445,7 +399,6 @@ IScroll.prototype = {
 
     this.endTime = 0;
     this.directionX = 0;
-    this.directionY = 0;
 
     if (hasPointer && !this.options.disablePointer) {
       // The wrapper should have `touchAction` property for using pointerEvent.
@@ -465,7 +418,7 @@ IScroll.prototype = {
     }
     this.wrapperOffset = offset(this.wrapper);
 
-    this._execEvent("refresh");
+    this._execEvent('refresh');
 
     this.resetPosition();
 
@@ -492,21 +445,13 @@ IScroll.prototype = {
     }
   },
 
-  _execEvent: function (type) {
+  _execEvent: function (type, ...args) {
     if (!this._events[type]) {
       return;
     }
 
-    var i = 0,
-      l = this._events[type].length;
-
-    if (!l) {
-      return;
-    }
-
-    for (; i < l; i++) {
-      this._events[type][i].apply(this, [].slice.call(arguments, 1));
-    }
+    const eventListeners = this._events[type];
+    eventListeners.forEach((eventListner) => eventListner(...args));
   },
 
   scrollBy: function (x, y, time, easing) {
@@ -560,7 +505,7 @@ IScroll.prototype = {
       pos.top > 0 ? 0 : pos.top < this.maxScrollY ? this.maxScrollY : pos.top;
 
     time =
-      time === undefined || time === null || time === "auto"
+      time === undefined || time === null || time === 'auto'
         ? Math.max(Math.abs(this.x - pos.left), Math.abs(this.y - pos.top))
         : time;
 
@@ -570,54 +515,53 @@ IScroll.prototype = {
   _translate: function (x, y) {
     this.x = x;
     this.y = y;
-    this.options.onTranslate(x * -1, y);
-    //this.wrapper.scrollTo(x * -1, y);
+    this._execEvent('translate', x * -1, y);
   },
 
   _initEvents: function (remove) {
     var eventType = remove ? removeEvent : addEvent,
       target = this.options.bindToWrapper ? this.wrapper : window;
 
-    eventType(window, "orientationchange", this);
-    eventType(window, "resize", this);
+    eventType(window, 'orientationchange', this);
+    eventType(window, 'resize', this);
 
     if (this.options.click) {
-      eventType(this.wrapper, "click", this, true);
+      eventType(this.wrapper, 'click', this, true);
     }
 
     if (!this.options.disableMouse) {
-      eventType(this.wrapper, "mousedown", this);
-      eventType(target, "mousemove", this);
-      eventType(target, "mousecancel", this);
-      eventType(target, "mouseup", this);
+      eventType(this.wrapper, 'mousedown', this);
+      eventType(target, 'mousemove', this);
+      eventType(target, 'mousecancel', this);
+      eventType(target, 'mouseup', this);
     }
 
     if (hasPointer && !this.options.disablePointer) {
-      eventType(this.wrapper, "pointerdown", this);
-      eventType(target, "pointermove", this);
-      eventType(target, "pointercancel", this);
-      eventType(target, "pointerup", this);
+      eventType(this.wrapper, 'pointerdown', this);
+      eventType(target, 'pointermove', this);
+      eventType(target, 'pointercancel', this);
+      eventType(target, 'pointerup', this);
     }
 
     if (hasTouch && !this.options.disableTouch) {
-      eventType(this.wrapper, "touchstart", this);
-      eventType(target, "touchmove", this);
-      eventType(target, "touchcancel", this);
-      eventType(target, "touchend", this);
+      eventType(this.wrapper, 'touchstart', this);
+      eventType(target, 'touchmove', this);
+      eventType(target, 'touchcancel', this);
+      eventType(target, 'touchend', this);
     }
   },
 
   _initWheel: function () {
-    addEvent(this.wrapper, "wheel", this);
-    addEvent(this.wrapper, "mousewheel", this);
-    addEvent(this.wrapper, "DOMMouseScroll", this);
+    addEvent(this.wrapper, 'wheel', this);
+    addEvent(this.wrapper, 'mousewheel', this);
+    addEvent(this.wrapper, 'DOMMouseScroll', this);
 
-    this.on("destroy", function () {
+    this.on('destroy', () => {
       clearTimeout(this.wheelTimeout);
       this.wheelTimeout = null;
-      removeEvent(this.wrapper, "wheel", this);
-      removeEvent(this.wrapper, "mousewheel", this);
-      removeEvent(this.wrapper, "DOMMouseScroll", this);
+      removeEvent(this.wrapper, 'wheel', this);
+      removeEvent(this.wrapper, 'mousewheel', this);
+      removeEvent(this.wrapper, 'DOMMouseScroll', this);
     });
   },
 
@@ -633,19 +577,19 @@ IScroll.prototype = {
       that = this;
 
     if (this.wheelTimeout === undefined) {
-      that._execEvent("scrollStart");
+      that._execEvent('scrollStart');
     }
 
     // Execute the scrollEnd event after 400ms the wheel stopped scrolling
     clearTimeout(this.wheelTimeout);
     this.wheelTimeout = setTimeout(function () {
       if (!that.options.snap) {
-        that._execEvent("scrollEnd");
+        that._execEvent('scrollEnd');
       }
       that.wheelTimeout = undefined;
     }, 400);
 
-    if ("deltaX" in e) {
+    if ('deltaX' in e) {
       if (e.deltaMode === 1) {
         wheelDeltaX = -e.deltaX * this.options.mouseWheelSpeed;
         wheelDeltaY = -e.deltaY * this.options.mouseWheelSpeed;
@@ -653,13 +597,13 @@ IScroll.prototype = {
         wheelDeltaX = -e.deltaX;
         wheelDeltaY = -e.deltaY;
       }
-    } else if ("wheelDeltaX" in e) {
+    } else if ('wheelDeltaX' in e) {
       wheelDeltaX = (e.wheelDeltaX / 120) * this.options.mouseWheelSpeed;
       wheelDeltaY = (e.wheelDeltaY / 120) * this.options.mouseWheelSpeed;
-    } else if ("wheelDelta" in e) {
+    } else if ('wheelDelta' in e) {
       wheelDeltaX = wheelDeltaY =
         (e.wheelDelta / 120) * this.options.mouseWheelSpeed;
-    } else if ("detail" in e) {
+    } else if ('detail' in e) {
       wheelDeltaX = wheelDeltaY =
         (-e.detail / 3) * this.options.mouseWheelSpeed;
     } else {
@@ -678,7 +622,6 @@ IScroll.prototype = {
     newY = this.y + Math.round(this.hasVerticalScroll ? wheelDeltaY : 0);
 
     this.directionX = wheelDeltaX > 0 ? -1 : wheelDeltaX < 0 ? 1 : 0;
-    this.directionY = wheelDeltaY > 0 ? -1 : wheelDeltaY < 0 ? 1 : 0;
 
     if (newX > 0) {
       newX = 0;
@@ -695,7 +638,7 @@ IScroll.prototype = {
     this.scrollTo(newX, newY, 0);
 
     if (this.options.probeType > 1) {
-      this._execEvent("scroll");
+      this._execEvent('scroll');
     }
 
     // INSERT POINT: _wheel
@@ -703,10 +646,10 @@ IScroll.prototype = {
 
   _initKeys: function (e) {
     // default key bindings
-    addEvent(window, "keydown", this);
+    addEvent(window, 'keydown', this);
 
-    this.on("destroy", function () {
-      removeEvent(window, "keydown", this);
+    this.on('destroy', () => {
+      removeEvent(window, 'keydown', this);
     });
   },
 
@@ -785,7 +728,7 @@ IScroll.prototype = {
         that._translate(destX, destY);
 
         if (!that.resetPosition(that.options.bounceTime)) {
-          that._execEvent("scrollEnd");
+          that._execEvent('scrollEnd');
         }
 
         return;
@@ -802,7 +745,7 @@ IScroll.prototype = {
       }
 
       if (that.options.probeType === 3) {
-        that._execEvent("scroll");
+        that._execEvent('scroll');
       }
     }
 
@@ -812,41 +755,41 @@ IScroll.prototype = {
 
   handleEvent: function (e) {
     switch (e.type) {
-      case "touchstart":
-      case "pointerdown":
-      case "MSPointerDown":
-      case "mousedown":
+      case 'touchstart':
+      case 'pointerdown':
+      case 'MSPointerDown':
+      case 'mousedown':
         this._start(e);
         break;
-      case "touchmove":
-      case "pointermove":
-      case "MSPointerMove":
-      case "mousemove":
+      case 'touchmove':
+      case 'pointermove':
+      case 'MSPointerMove':
+      case 'mousemove':
         this._move(e);
         break;
-      case "touchend":
-      case "pointerup":
-      case "MSPointerUp":
-      case "mouseup":
-      case "touchcancel":
-      case "pointercancel":
-      case "MSPointerCancel":
-      case "mousecancel":
+      case 'touchend':
+      case 'pointerup':
+      case 'MSPointerUp':
+      case 'mouseup':
+      case 'touchcancel':
+      case 'pointercancel':
+      case 'MSPointerCancel':
+      case 'mousecancel':
         this._end(e);
         break;
-      case "wheel":
-      case "DOMMouseScroll":
-      case "mousewheel":
+      case 'wheel':
+      case 'DOMMouseScroll':
+      case 'mousewheel':
         this._wheel(e);
         break;
-      case "orientationchange":
-      case "resize":
+      case 'orientationchange':
+      case 'resize':
         this._resize();
         break;
-      case "keydown":
+      case 'keydown':
         this._key(e);
         break;
-      case "click":
+      case 'click':
         if (this.enabled && !e._constructed) {
           e.preventDefault();
           e.stopPropagation();

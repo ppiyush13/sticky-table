@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import data from "./data.json";
-import { useTable, useBlockLayout } from "react-table";
-import { useSticky } from "react-table-sticky";
-import { useEffect, useRef } from "react";
-import { Rows } from "./rows";
+import styled from 'styled-components';
+import data from './data.json';
+import { useTable, useBlockLayout } from 'react-table';
+import { useSticky } from 'react-table-sticky';
+import { useEffect, useRef } from 'react';
+import { Rows } from './rows';
 //import IScroll from 'iscroll/build/iscroll-probe';
-import IScroll from "./iScroll-min/iScroll";
+import IScroll from './iScroll-min/iScroll';
 
-let overflow = "auto";
+let overflow = 'auto';
 const groupData = (data) => {
   const groupedData = data.reduce((acc, cur) => {
     if (!acc[cur.age]) acc[cur.age] = [];
@@ -42,40 +42,40 @@ const columns = [
   //   accessor: 'age',
   // },
   {
-    id: "name",
-    Header: "Name",
-    accessor: "name",
-    sticky: "left",
+    id: 'name',
+    Header: 'Name',
+    accessor: 'name',
+    sticky: 'left',
     width: 100,
   },
   {
-    id: "email",
-    Header: "email",
-    accessor: "email",
+    id: 'email',
+    Header: 'email',
+    accessor: 'email',
     width: 300,
     //sticky: 'left',
   },
   {
-    id: "name2",
-    Header: "Name 2",
-    accessor: "name",
+    id: 'name2',
+    Header: 'Name 2',
+    accessor: 'name',
   },
   {
-    id: "email2",
-    Header: "email 2",
-    accessor: "email",
+    id: 'email2',
+    Header: 'email 2',
+    accessor: 'email',
     width: 300,
   },
   {
-    id: "name3",
-    Header: "Name 3",
-    accessor: "name",
+    id: 'name3',
+    Header: 'Name 3',
+    accessor: 'name',
     width: 300,
   },
   {
-    id: "email3",
-    Header: "email 3",
-    accessor: "email",
+    id: 'email3',
+    Header: 'email 3',
+    accessor: 'email',
     width: 300,
   },
 ];
@@ -105,11 +105,12 @@ export const App = () => {
       freeScroll: false,
       probeType: 3,
       keyBindings: true,
-      eventPassthrough: "vertical",
-      onTranslate: (x) => {
-        headerRef.current.scrollTo(x, 0);
-        el.scrollTo(x, 0);
-      },
+      eventPassthrough: 'vertical',
+    });
+
+    iscroller.on('translate', (x, y) => {
+      headerRef.current.scrollTo(x, 0);
+      el.scrollTo(x, 0);
     });
   }, [ref]);
 
@@ -117,19 +118,19 @@ export const App = () => {
   return (
     <Styles>
       <div style={{ height: 100 }}>Before table</div>
-      <div {...getTableProps()} className="table sticky" style={{}}>
-        <div className={"header"} ref={headerRef}>
+      <div {...getTableProps()} className='table sticky' style={{}}>
+        <div className={'header'} ref={headerRef}>
           {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+            <div {...headerGroup.getHeaderGroupProps()} className='tr'>
               {headerGroup.headers.map((column) => (
-                <div {...column.getHeaderProps()} className="th">
-                  {column.render("Header")}
+                <div {...column.getHeaderProps()} className='th'>
+                  {column.render('Header')}
                 </div>
               ))}
             </div>
           ))}
         </div>
-        <div ref={ref} className={"body"} {...getTableBodyProps()}>
+        <div ref={ref} className={'body'} {...getTableBodyProps()}>
           <Rows virutal rows={rows} prepareRow={prepareRow} />
         </div>
       </div>
