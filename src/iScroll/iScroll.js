@@ -339,10 +339,9 @@
 			scrollY: true,
 			directionLockThreshold: 5,
 			momentum: true,
-	
-			bounce: true,
+
 			bounceTime: 600,
-			bounceEasing: '',
+			bounceEasing: 'circular',
 	
 			preventDefault: true,
 			preventDefaultException: { tagName: /^(INPUT|TEXTAREA|BUTTON|SELECT)$/ },
@@ -357,7 +356,7 @@
 		// Normalize options
 		this.options.eventPassthrough = this.options.eventPassthrough === true ? 'vertical' : this.options.eventPassthrough;
 		this.options.preventDefault = !this.options.eventPassthrough && this.options.preventDefault;
-	
+
 		// If you want eventPassthrough I have to lock one of the axes
 		this.options.scrollY = this.options.eventPassthrough == 'vertical' ? false : this.options.scrollY;
 		this.options.scrollX = this.options.eventPassthrough == 'horizontal' ? false : this.options.scrollX;
@@ -365,9 +364,9 @@
 		// With eventPassthrough we also need lockDirection mechanism
 		this.options.freeScroll = this.options.freeScroll && !this.options.eventPassthrough;
 		this.options.directionLockThreshold = this.options.eventPassthrough ? 0 : this.options.directionLockThreshold;
-	
-		this.options.bounceEasing = typeof this.options.bounceEasing == 'string' ? utils.ease[this.options.bounceEasing] || utils.ease.circular : this.options.bounceEasing;
-	
+
+		this.options.bounceEasingFn = utils.ease[this.options.bounceEasing];
+
 		this.options.resizePolling = this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
 	
 		if ( this.options.tap === true ) {
@@ -535,10 +534,10 @@
 	
 			// Slow down if outside of the boundaries
 			if ( newX > 0 || newX < this.maxScrollX ) {
-				newX = this.options.bounce ? this.x + deltaX / 3 : newX > 0 ? 0 : this.maxScrollX;
+				newX = newX > 0 ? 0 : this.maxScrollX;
 			}
 			if ( newY > 0 || newY < this.maxScrollY ) {
-				newY = this.options.bounce ? this.y + deltaY / 3 : newY > 0 ? 0 : this.maxScrollY;
+				newY = newY > 0 ? 0 : this.maxScrollY;
 			}
 	
 			this.directionX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
@@ -621,8 +620,8 @@
 	
 			// start momentum animation if needed
 			if ( this.options.momentum && duration < 300 ) {
-				momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
-				momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
+				momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX,  0, this.options.deceleration) : { destination: newX, duration: 0 };
+				momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, 0, this.options.deceleration) : { destination: newY, duration: 0 };
 				newX = momentumX.destination;
 				newY = momentumY.destination;
 				time = Math.max(momentumX.duration, momentumY.duration);
@@ -659,23 +658,25 @@
 	
 			if ( !this.hasHorizontalScroll || this.x > 0 ) {
 				x = 0;
-			} else if ( this.x < this.maxScrollX ) {
+			} 
+			else if ( this.x < this.maxScrollX ) {
 				x = this.maxScrollX;
 			}
 	
 			if ( !this.hasVerticalScroll || this.y > 0 ) {
 				y = 0;
-			} else if ( this.y < this.maxScrollY ) {
+			} 
+			else if ( this.y < this.maxScrollY ) {
 				y = this.maxScrollY;
 			}
-	
-			if ( x == this.x && y == this.y ) {
+
+			if ( x === this.x && y === this.y ) {
 				return false;
 			}
-	
-			this.scrollTo(x, y, time, this.options.bounceEasing);
-	
-			return true;
+			else {
+				this.scrollTo(x, y, time, this.options.bounceEasingFn);
+				return true;
+			}
 		},
 	
 		disable: function () {
@@ -705,7 +706,7 @@
 	
 			this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
 			this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
-			
+
 			if ( !this.hasHorizontalScroll ) {
 				this.maxScrollX = 0;
 				this.scrollerWidth = this.wrapperWidth;
@@ -719,11 +720,11 @@
 			this.endTime = 0;
 			this.directionX = 0;
 			this.directionY = 0;
-			
+
 			if(utils.hasPointer && !this.options.disablePointer) {
 				// The wrapper should have `touchAction` property for using pointerEvent.
 				this.wrapper.style[utils.style.touchAction] = utils.getTouchAction(this.options.eventPassthrough, true);
-	
+
 				// case. not support 'pinch-zoom'
 				// https://github.com/cubiq/iscroll/issues/1118#issuecomment-270057583
 				if (!this.wrapper.style[utils.style.touchAction]) {

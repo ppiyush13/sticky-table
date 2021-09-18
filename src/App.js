@@ -197,6 +197,7 @@ export const App = () => {
       preventDefault: false,
       interactiveScrollbars: false,
       keyBindings: true,
+      eventPassthrough: 'vertical',
     });
     // iscroller.on('scroll', (event) => {
     //   console.log(event);
