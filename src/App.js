@@ -1,25 +1,24 @@
-import styled from 'styled-components';
-import data from './data.json';
-import { useTable, useBlockLayout } from 'react-table';
-import { useSticky } from 'react-table-sticky';
-import { useEffect, useRef } from 'react';
-import { Rows } from './rows';
+import styled from "styled-components";
+import data from "./data.json";
+import { useTable, useBlockLayout } from "react-table";
+import { useSticky } from "react-table-sticky";
+import { useEffect, useRef } from "react";
+import { Rows } from "./rows";
 //import IScroll from 'iscroll/build/iscroll-probe';
-import IScroll from './iScroll/iScroll';
+import IScroll from "./iScroll-min/iScroll";
 
-
-let overflow = 'auto'
-const groupData = data => {
+let overflow = "auto";
+const groupData = (data) => {
   const groupedData = data.reduce((acc, cur) => {
-    if(!acc[cur.age]) acc[cur.age] = [];
+    if (!acc[cur.age]) acc[cur.age] = [];
     acc[cur.age].push(cur);
 
     return acc;
   }, {});
 
-  const sortedData = Object
-    .entries(groupedData)
-    .sort((entryA, entryB) => entryA[0] - entryB[0]);
+  const sortedData = Object.entries(groupedData).sort(
+    (entryA, entryB) => entryA[0] - entryB[0]
+  );
 
   const groupCounts = sortedData.map(([key, values]) => values.length + 1);
   const tableData = sortedData
@@ -33,7 +32,7 @@ const groupData = data => {
       ];
     })
     .flat();
-  
+
   return { groupCounts, tableData };
 };
 
@@ -43,64 +42,58 @@ const columns = [
   //   accessor: 'age',
   // },
   {
-    id: 'name',
-    Header: 'Name',
-    accessor: 'name',
-    sticky: 'left',
+    id: "name",
+    Header: "Name",
+    accessor: "name",
+    sticky: "left",
     width: 100,
   },
   {
-    id: 'email',
-    Header: 'email',
-    accessor: 'email',
+    id: "email",
+    Header: "email",
+    accessor: "email",
     width: 300,
     //sticky: 'left',
   },
   {
-    id: 'name2',
-    Header: 'Name 2',
-    accessor: 'name',
+    id: "name2",
+    Header: "Name 2",
+    accessor: "name",
   },
   {
-    id: 'email2',
-    Header: 'email 2',
-    accessor: 'email',
+    id: "email2",
+    Header: "email 2",
+    accessor: "email",
     width: 300,
   },
   {
-    id: 'name3',
-    Header: 'Name 3',
-    accessor: 'name',
+    id: "name3",
+    Header: "Name 3",
+    accessor: "name",
     width: 300,
   },
   {
-    id: 'email3',
-    Header: 'email 3',
-    accessor: 'email',
+    id: "email3",
+    Header: "email 3",
+    accessor: "email",
     width: 300,
   },
 ];
 
 export const App = () => {
-  const {tableData, groupCounts} = groupData(data.slice(0, 100));
+  const { tableData, groupCounts } = groupData(data.slice(0, 100));
   const ref = useRef();
   const headerRef = useRef();
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable(
-    {
-      columns,
-      data: tableData,
-    },
-    useBlockLayout,
-    useSticky,
-  );
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data: tableData,
+      },
+      useBlockLayout,
+      useSticky
+    );
   useEffect(() => {
-    
     const el = ref.current;
     //iscroll
     const iscroller = new IScroll(el, {
@@ -112,43 +105,39 @@ export const App = () => {
       freeScroll: false,
       probeType: 3,
       keyBindings: true,
-      eventPassthrough: 'vertical',
+      eventPassthrough: "vertical",
       onTranslate: (x) => {
         headerRef.current.scrollTo(x, 0);
         el.scrollTo(x, 0);
-      }
+      },
     });
-
-
   }, [ref]);
 
   // Render the UI for your table
   return (
     <Styles>
-      <div style={{height: 100}}>Before table</div>
-        <div {...getTableProps()} className="table sticky" style={{  }}>
-            <div className={"header"} ref={headerRef}>
-              {headerGroups.map((headerGroup) => (
-                <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                  {headerGroup.headers.map((column) => (
-                    <div {...column.getHeaderProps()} className="th">
-                      {column.render('Header')}
-                    </div>
-                  ))}
+      <div style={{ height: 100 }}>Before table</div>
+      <div {...getTableProps()} className="table sticky" style={{}}>
+        <div className={"header"} ref={headerRef}>
+          {headerGroups.map((headerGroup) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              {headerGroup.headers.map((column) => (
+                <div {...column.getHeaderProps()} className="th">
+                  {column.render("Header")}
                 </div>
               ))}
             </div>
-              <div ref={ref}  className={"body"} {...getTableBodyProps()} >
-                <Rows virutal rows={rows} prepareRow={prepareRow}/>
-              </div>
+          ))}
         </div>
+        <div ref={ref} className={"body"} {...getTableBodyProps()}>
+          <Rows virutal rows={rows} prepareRow={prepareRow} />
+        </div>
+      </div>
     </Styles>
   );
-}
-
+};
 
 const Styles = styled.div`
-
   .table {
     border: 1px solid #ddd;
 
