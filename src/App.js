@@ -199,9 +199,9 @@ export const App = () => {
       preventDefault: false,
       interactiveScrollbars: false,
     });
-    iscroller.on('scroll', (event) => {
-      console.log(event);
-    });
+    // iscroller.on('scroll', (event) => {
+    //   console.log(event);
+    // });
     //iscroll ends
 
     // el.addEventListener('touchmove', e => {

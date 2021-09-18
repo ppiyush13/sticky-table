@@ -320,14 +320,14 @@
 		this.scrollerStyle = this.scroller.style;		// cache style for better performance
 	
 		this.options = {
-	
+
 			resizeScrollbars: true,
 	
 			mouseWheelSpeed: 20,
 	
 			snapThreshold: 0.334,
 	
-	// INSERT POINT: OPTIONS
+			// INSERT POINT: OPTIONS
 			disablePointer : !utils.hasPointer,
 			disableTouch : utils.hasPointer || !utils.hasTouch,
 			disableMouse : utils.hasPointer || utils.hasTouch,
@@ -420,7 +420,7 @@
 			this._initEvents();
 	
 			if ( this.options.scrollbars || this.options.indicators ) {
-				this._initIndicators();
+				//this._initIndicators();
 			}
 	
 			if ( this.options.mouseWheel ) {
@@ -434,9 +434,6 @@
 			if ( this.options.keyBindings ) {
 				this._initKeys();
 			}
-	
-	// INSERT POINT: _init
-	
 		},
 	
 		destroy: function () {
@@ -951,36 +948,12 @@
 					this.indicators[i].transitionTimingFunction(easing);
 				}
 			}
-	
-	
-	// INSERT POINT: _transitionTimingFunction
-	
 		},
 	
 		_translate: function (x, y) {
-			if ( this.options.useTransform ) {
-	
-			} else {
-				x = Math.round(x);
-				y = Math.round(y);
-				this.scrollerStyle.left = x + 'px';
-				this.scrollerStyle.top = y + 'px';
-			}
-	
 			this.x = x;
 			this.y = y;
-	
-		
-		if ( this.indicators ) {
-			for ( var i = this.indicators.length; i--; ) {
-				this.indicators[i].updatePosition();
-			}
-		}
-		//debugger
-		//console.log(x, y);
-		this.wrapper.scrollTo(x * -1, y);
-	// INSERT POINT: _translate
-	
+			this.wrapper.scrollTo(x * -1, y);
 		},
 	
 		_initEvents: function (remove) {
@@ -1035,111 +1008,6 @@
 			}
 	
 			return { x: x, y: y };
-		},
-		_initIndicators: function () {
-			var interactive = this.options.interactiveScrollbars,
-				customStyle = typeof this.options.scrollbars != 'string',
-				indicators = [],
-				indicator;
-	
-			var that = this;
-	
-			this.indicators = [];
-	
-			if ( this.options.scrollbars ) {
-				// Vertical scrollbar
-				if ( this.options.scrollY ) {
-					indicator = {
-						el: createDefaultScrollbar('v', interactive, this.options.scrollbars),
-						interactive: interactive,
-						defaultScrollbars: true,
-						customStyle: customStyle,
-						resize: this.options.resizeScrollbars,
-						shrink: this.options.shrinkScrollbars,
-						fade: this.options.fadeScrollbars,
-						listenX: false
-					};
-	
-					this.wrapper.appendChild(indicator.el);
-					indicators.push(indicator);
-				}
-	
-				// Horizontal scrollbar
-				if ( this.options.scrollX ) {
-					indicator = {
-						el: createDefaultScrollbar('h', interactive, this.options.scrollbars),
-						interactive: interactive,
-						defaultScrollbars: true,
-						customStyle: customStyle,
-						resize: this.options.resizeScrollbars,
-						shrink: this.options.shrinkScrollbars,
-						fade: this.options.fadeScrollbars,
-						listenY: false
-					};
-	
-					this.wrapper.appendChild(indicator.el);
-					indicators.push(indicator);
-				}
-			}
-	
-			if ( this.options.indicators ) {
-				// TODO: check concat compatibility
-				indicators = indicators.concat(this.options.indicators);
-			}
-	
-			for ( var i = indicators.length; i--; ) {
-				this.indicators.push( new Indicator(this, indicators[i]) );
-			}
-	
-			// TODO: check if we can use array.map (wide compatibility and performance issues)
-			function _indicatorsMap (fn) {
-				if (that.indicators) {
-					for ( var i = that.indicators.length; i--; ) {
-						fn.call(that.indicators[i]);
-					}
-				}
-			}
-	
-			if ( this.options.fadeScrollbars ) {
-				this.on('scrollEnd', function () {
-					_indicatorsMap(function () {
-						this.fade();
-					});
-				});
-	
-				this.on('scrollCancel', function () {
-					_indicatorsMap(function () {
-						this.fade();
-					});
-				});
-	
-				this.on('scrollStart', function () {
-					_indicatorsMap(function () {
-						this.fade(1);
-					});
-				});
-	
-				this.on('beforeScrollStart', function () {
-					_indicatorsMap(function () {
-						this.fade(1, true);
-					});
-				});
-			}
-	
-	
-			this.on('refresh', function () {
-				_indicatorsMap(function () {
-					this.refresh();
-				});
-			});
-	
-			this.on('destroy', function () {
-				_indicatorsMap(function () {
-					this.destroy();
-				});
-	
-				delete this.indicators;
-			});
 		},
 	
 		_initWheel: function () {
