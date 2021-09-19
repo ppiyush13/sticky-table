@@ -4,8 +4,9 @@ import { useTable, useBlockLayout } from 'react-table';
 import { useSticky } from 'react-table-sticky';
 import { useEffect, useRef } from 'react';
 import { Rows } from './rows';
-//import IScroll from 'iscroll/build/iscroll-probe';
-import IScroll from './iScroll-min/iScroll';
+//import Scroll from 'iscroll/build/iscroll-probe';
+//import Scroll from './iScroll-min/iScroll';
+import Scroll from '@better-scroll/core';
 
 let overflow = 'auto';
 const groupData = (data) => {
@@ -96,21 +97,46 @@ export const App = () => {
   useEffect(() => {
     const el = ref.current;
     //iscroll
-    const iscroller = new IScroll(el, {
-      // disableMouse: false,
-      // disablePointer: false,
-      // disableTouch: false,
-      mouseWheel: true,
+    // const iscroller = new IScroll(el, {
+    //   // disableMouse: false,
+    //   // disablePointer: false,
+    //   // disableTouch: false,
+    //   mouseWheel: true,
+    //   scrollX: true,
+    //   freeScroll: false,
+    //   probeType: 3,
+    //   keyBindings: true,
+    //   eventPassthrough: 'vertical',
+    //   preventDefault: false,
+    //   //bindToWrapper: true,
+    // });
+
+    // iscroller.on('translate', (x, y) => {
+    //   headerRef.current.scrollTo(x, y);
+    //   el.scrollTo(x, y);
+    // });
+    const scroller = new Scroll(el, {
+      bounce: false,
       scrollX: true,
+      scrollY: false,
       freeScroll: false,
       probeType: 3,
       keyBindings: true,
       eventPassthrough: 'vertical',
+      preventDefault: false,
+      useTransition: false,
+      //bindToWrapper: true,
     });
 
-    iscroller.on('translate', (x, y) => {
-      headerRef.current.scrollTo(x, y);
-      el.scrollTo(x, y);
+    // scroller.on('translate', (x, y) => {
+    //   headerRef.current.scrollTo(x * -1, y);
+    //   el.scrollTo(x * -1, y);
+    // });
+
+    scroller.scroller.translater.hooks.on('translate', (point) => {
+      const { x, y } = point;
+      headerRef.current.scrollTo(x * -1, y);
+      el.scrollTo(x * -1, y);
     });
   }, [ref]);
 
@@ -131,7 +157,7 @@ export const App = () => {
           ))}
         </div>
         <div ref={ref} className={'body'} {...getTableBodyProps()}>
-          <Rows virutal rows={rows} prepareRow={prepareRow} />
+          <Rows virtual={true} rows={rows} prepareRow={prepareRow} />
         </div>
       </div>
     </Styles>
@@ -151,7 +177,6 @@ const Styles = styled.div`
       &.group {
         background-color: wheat;
         position: sticky;
-        top: 30px;
       }
     }
 
@@ -195,7 +220,7 @@ const Styles = styled.div`
         top: 0;
         width: 100%;
         background-color: #fff;
-        box-shadow: 0px 3px 3px #ccc;
+        box-shadow: 0px 1px 2px #aaa;
       }
 
       .footer {
@@ -223,7 +248,7 @@ const Styles = styled.div`
       }
 
       [data-sticky-last-left-td] {
-        box-shadow: 2px 0px 3px #ccc;
+        box-shadow: 0px 0px 2px #aaa;
       }
 
       [data-sticky-first-right-td] {

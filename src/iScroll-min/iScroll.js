@@ -15,7 +15,6 @@ import { easeFns } from './ease-fns';
 export default function IScroll(el, options) {
   this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
   this.scroller = this.wrapper.children[0];
-  this.scrollerStyle = this.scroller.style; // cache style for better performance
 
   this.options = {
     keyBindings: false,
@@ -556,6 +555,7 @@ IScroll.prototype = {
     var eventType = remove ? removeEvent : addEvent,
       target = this.options.bindToWrapper ? this.wrapper : window;
 
+    console.log(target);
     eventType(window, 'orientationchange', this);
     eventType(window, 'resize', this);
 

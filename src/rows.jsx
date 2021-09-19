@@ -1,17 +1,26 @@
-import { Virtuoso } from "react-virtuoso";
+import { Virtuoso } from 'react-virtuoso';
 
 export const Rows = ({ virtual, rows, prepareRow }) => {
-  const rowRenderer = (index, ...args) => {
+  const rowRenderer = (index, hide) => {
     const row = rows[index];
     prepareRow(row);
     return (
       <div
         {...row.getRowProps()}
-        className={row.original.groupRow ? "tr group" : "tr"}
+        className={row.original.groupRow ? 'tr group' : 'tr'}
       >
         {row.cells.map((cell) => (
-          <div {...cell.getCellProps()} className="td">
-            {cell.render("Cell")}
+          <div
+            {...cell.getCellProps([
+              {
+                style: {
+                  display: hide === true ? 'none' : 'flex',
+                },
+              },
+            ])}
+            className='td'
+          >
+            {cell.render('Cell')}
           </div>
         ))}
       </div>
@@ -19,7 +28,15 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
   };
 
   return virtual ? (
-    <Virtuoso useWindowScroll data={rows} itemContent={rowRenderer} />
+    <>
+      <>{rowRenderer(0, true)}</>
+      <Virtuoso
+        useWindowScroll
+        overscan={1000}
+        data={rows}
+        itemContent={rowRenderer}
+      />
+    </>
   ) : (
     rows.map((row, index) => rowRenderer(index))
   );
