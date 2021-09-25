@@ -274,15 +274,12 @@ IScroll.prototype = {
       e.preventDefault();
     }
 
-    var momentumX,
-      momentumY,
-      duration = getTime() - this.startTime,
-      newX = Math.round(this.x),
-      newY = Math.round(this.y),
-      distanceX = Math.abs(newX - this.startX),
-      distanceY = Math.abs(newY - this.startY),
-      time = 0,
-      easing = undefined;
+    let newX = Math.round(this.x);
+    let newY = Math.round(this.y);
+    let time = 0;
+    const duration = getTime() - this.startTime;
+    const distanceX = Math.abs(newX - this.startX);
+    const distanceY = Math.abs(newY - this.startY);
 
     this.initiated = 0;
     this.endTime = getTime();
@@ -312,7 +309,7 @@ IScroll.prototype = {
 
     // start momentum animation if needed
     if (this.options.momentum && duration < 300) {
-      momentumX = this.hasHorizontalScroll
+      const momentumX = this.hasHorizontalScroll
         ? momentum(
             this.x,
             this.startX,
@@ -322,7 +319,7 @@ IScroll.prototype = {
             this.options.deceleration
           )
         : { destination: newX, duration: 0 };
-      momentumY = this.hasVerticalScroll
+      const momentumY = this.hasVerticalScroll
         ? momentum(
             this.y,
             this.startY,
@@ -340,6 +337,7 @@ IScroll.prototype = {
     // INSERT POINT: _end
 
     if (newX !== this.x || newY !== this.y) {
+      let easing = undefined;
       // change easing function when scroller goes out of the boundaries
       if (
         newX > 0 ||
@@ -358,16 +356,16 @@ IScroll.prototype = {
   },
 
   _resize: function () {
-    var that = this;
     clearTimeout(this.resizeTimeout);
-    this.resizeTimeout = setTimeout(function () {
-      that.refresh();
-    }, this.options.resizePolling);
+    this.resizeTimeout = setTimeout(
+      () => this.refresh(),
+      this.options.resizePolling
+    );
   },
 
   resetPosition: function (time) {
-    var x = this.x,
-      y = this.y;
+    let x = this.x;
+    let y = this.y;
 
     time = time || 0;
 
@@ -415,7 +413,7 @@ IScroll.prototype = {
     this.wrapperWidth = this.wrapper.clientWidth;
     this.wrapperHeight = this.wrapper.clientHeight;
 
-    var rect = getRect(this.scroller);
+    const rect = getRect(this.scroller);
     /* REPLACE START: refresh */
 
     this.scrollerWidth = rect.width;
@@ -481,7 +479,7 @@ IScroll.prototype = {
       return;
     }
 
-    var index = this._events[type].indexOf(fn);
+    const index = this._events[type].indexOf(fn);
 
     if (index > -1) {
       this._events[type].splice(index, 1);
@@ -520,14 +518,14 @@ IScroll.prototype = {
       return;
     }
 
-    var pos = offset(el);
+    const pos = offset(el);
 
     pos.left -= this.wrapperOffset.left;
     pos.top -= this.wrapperOffset.top;
 
     // if offsetX/Y are true we center the element to the screen
-    var elRect = getRect(el);
-    var wrapperRect = getRect(this.wrapper);
+    const elRect = getRect(el);
+    const wrapperRect = getRect(this.wrapper);
     if (offsetX === true) {
       offsetX = Math.round(elRect.width / 2 - wrapperRect.width / 2);
     }
@@ -588,8 +586,8 @@ IScroll.prototype = {
   },
 
   _initEvents: function (remove) {
-    var eventType = remove ? removeEvent : addEvent,
-      target = this.options.bindToWrapper ? this.wrapper : window;
+    const eventType = remove ? removeEvent : addEvent;
+    const target = this.options.bindToWrapper ? this.wrapper : window;
 
     eventType(window, 'orientationchange', this);
     eventType(window, 'resize', this);
@@ -619,23 +617,22 @@ IScroll.prototype = {
       return;
     }
 
-    var wheelDeltaX,
-      wheelDeltaY,
-      newX,
-      newY,
-      that = this;
+    let wheelDeltaX;
+    let wheelDeltaY;
+    let newX;
+    let newY;
 
     if (this.wheelTimeout === undefined) {
-      that._execEvent('scrollStart');
+      this._execEvent('scrollStart');
     }
 
     // Execute the scrollEnd event after 400ms the wheel stopped scrolling
     clearTimeout(this.wheelTimeout);
-    this.wheelTimeout = setTimeout(function () {
-      if (!that.options.snap) {
-        that._execEvent('scrollEnd');
+    this.wheelTimeout = setTimeout(() => {
+      if (!this.options.snap) {
+        this._execEvent('scrollEnd');
       }
-      that.wheelTimeout = undefined;
+      this.wheelTimeout = undefined;
     }, 400);
 
     if ('deltaX' in e) {
@@ -708,11 +705,11 @@ IScroll.prototype = {
       return;
     }
 
-    var newX = this.x,
-      newY = this.y,
-      now = getTime(),
-      prevTime = this.keyTime || 0,
-      acceleration = 0.25;
+    const now = getTime();
+    const prevTime = this.keyTime || 0;
+    const acceleration = 0.25;
+    let newX = this.x;
+    let newY = this.y;
 
     this.keyAcceleration =
       now - prevTime < 200
@@ -761,43 +758,39 @@ IScroll.prototype = {
   },
 
   _animate: function (destX, destY, duration, easingFn) {
-    var that = this,
-      startX = this.x,
-      startY = this.y,
-      startTime = getTime(),
-      destTime = startTime + duration;
+    const startX = this.x;
+    const startY = this.y;
+    const startTime = getTime();
+    const destTime = startTime + duration;
 
-    function step() {
-      var now = getTime(),
-        newX,
-        newY,
-        easing;
+    const step = () => {
+      const now = getTime();
 
       if (now >= destTime) {
-        that.isAnimating = false;
-        that._translate(destX, destY);
+        this.isAnimating = false;
+        this._translate(destX, destY);
 
-        if (!that.resetPosition(that.options.bounceTime)) {
-          that._execEvent('scrollEnd');
+        if (!this.resetPosition(this.options.bounceTime)) {
+          this._execEvent('scrollEnd');
         }
 
         return;
       }
 
-      now = (now - startTime) / duration;
-      easing = easingFn(now);
-      newX = (destX - startX) * easing + startX;
-      newY = (destY - startY) * easing + startY;
-      that._translate(newX, newY);
+      const easeTime = (now - startTime) / duration;
+      const easing = easingFn(easeTime);
+      const newX = (destX - startX) * easing + startX;
+      const newY = (destY - startY) * easing + startY;
+      this._translate(newX, newY);
 
-      if (that.isAnimating) {
+      if (this.isAnimating) {
         window.requestAnimationFrame(step);
       }
 
-      if (that.options.probeType === 3) {
-        that._execEvent('scroll');
+      if (this.options.probeType === 3) {
+        this._execEvent('scroll');
       }
-    }
+    };
 
     this.isAnimating = true;
     step();

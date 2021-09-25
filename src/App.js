@@ -116,7 +116,7 @@ export const App = () => {
           <div style={{ height: 1, overflowX: 'auto', width: '1450px' }}></div>
         </div>
       </div>
-      <div style={{ height: 1000 }}>after table</div>
+      <div style={{ height: 500 }}>after table</div>
     </Styles>
   );
 };
