@@ -35,6 +35,7 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
       {virtual ? (
         <>
           <Virtuoso
+            overscan={1000}
             useWindowScroll={true}
             data={rows}
             itemContent={rowRenderer}

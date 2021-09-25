@@ -804,7 +804,6 @@ IScroll.prototype = {
   },
 
   handleEvent: function (e) {
-    console.log(e.type);
     switch (e.type) {
       case 'touchstart':
       case 'pointerdown':
