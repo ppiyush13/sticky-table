@@ -399,6 +399,16 @@ IScroll.prototype = {
     this.enabled = true;
   },
 
+  enableMouseEvents: function () {
+    this.enable = true;
+    this._initMouseEvents();
+  },
+
+  disableMouseEvents: function () {
+    this.enable = false;
+    this._initMouseEvents(true);
+  },
+
   refresh: function () {
     getRect(this.wrapper); // Force reflow
 
@@ -551,17 +561,9 @@ IScroll.prototype = {
     this._execEvent('translate', x * -1, y);
   },
 
-  _initEvents: function (remove) {
-    var eventType = remove ? removeEvent : addEvent,
-      target = this.options.bindToWrapper ? this.wrapper : window;
-
-    console.log(target);
-    eventType(window, 'orientationchange', this);
-    eventType(window, 'resize', this);
-
-    if (this.options.click) {
-      eventType(this.wrapper, 'click', this, true);
-    }
+  _initMouseEvents: function (remove) {
+    const eventType = remove ? removeEvent : addEvent;
+    const target = this.options.bindToWrapper ? this.wrapper : window;
 
     if (!this.options.disableMouse) {
       eventType(this.wrapper, 'mousedown', this);
@@ -583,6 +585,19 @@ IScroll.prototype = {
       eventType(target, 'touchcancel', this);
       eventType(target, 'touchend', this);
     }
+  },
+
+  _initEvents: function (remove) {
+    var eventType = remove ? removeEvent : addEvent,
+      target = this.options.bindToWrapper ? this.wrapper : window;
+
+    eventType(window, 'orientationchange', this);
+    eventType(window, 'resize', this);
+
+    if (this.options.click) {
+      eventType(this.wrapper, 'click', this, true);
+    }
+    this._initMouseEvents(remove);
   },
 
   _initWheel: function () {
@@ -789,6 +804,7 @@ IScroll.prototype = {
   },
 
   handleEvent: function (e) {
+    console.log(e.type);
     switch (e.type) {
       case 'touchstart':
       case 'pointerdown':

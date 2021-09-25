@@ -5,8 +5,11 @@ import { useSticky } from 'react-table-sticky';
 import { useEffect, useRef } from 'react';
 import { Rows } from './rows';
 //import Scroll from 'iscroll/build/iscroll-probe';
-//import Scroll from './iScroll-min/iScroll';
+import IScroll from './iScroll-min/iScroll';
 import Scroll from '@better-scroll/core';
+//import Scrollbar from '@better-scroll/scroll-bar';
+
+//Scroll.use(Scrollbar);
 
 let overflow = 'auto';
 const groupData = (data) => {
@@ -84,6 +87,7 @@ const columns = [
 export const App = () => {
   const { tableData, groupCounts } = groupData(data.slice(0, 100));
   const ref = useRef();
+  const vScroller = useRef();
   const headerRef = useRef();
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -97,53 +101,78 @@ export const App = () => {
   useEffect(() => {
     const el = ref.current;
     //iscroll
-    // const iscroller = new IScroll(el, {
-    //   // disableMouse: false,
-    //   // disablePointer: false,
-    //   // disableTouch: false,
-    //   mouseWheel: true,
-    //   scrollX: true,
-    //   freeScroll: false,
-    //   probeType: 3,
-    //   keyBindings: true,
-    //   eventPassthrough: 'vertical',
-    //   preventDefault: false,
-    //   //bindToWrapper: true,
-    // });
-
-    // iscroller.on('translate', (x, y) => {
-    //   headerRef.current.scrollTo(x, y);
-    //   el.scrollTo(x, y);
-    // });
-    const scroller = new Scroll(el, {
-      bounce: false,
+    const iscroller = new IScroll(el, {
+      // disableMouse: true,
+      // disablePointer: true,
+      // disableTouch: false,
+      mouseWheel: true,
       scrollX: true,
-      scrollY: false,
       freeScroll: false,
       probeType: 3,
       keyBindings: true,
       eventPassthrough: 'vertical',
       preventDefault: false,
-      useTransition: false,
       //bindToWrapper: true,
     });
 
+    iscroller.on('translate', (x, y) => {
+      headerRef.current.scrollTo(x, y);
+      el.scrollTo(x, y);
+      vScroller.current.scrollLeft = x;
+      //vScroller.current.scrollTo(x, y);
+    });
+    vScroller.current.addEventListener('scroll', (event) => {
+      const x = vScroller.current.scrollLeft;
+      iscroller.scrollTo(x * -1, 0);
+    });
+
+    const mql = window.matchMedia('(pointer: coarse)');
+    mql.addEventListener('change', (e) => {
+      console.log(e.matches);
+      // if (e.matches) iscroller.enable();
+      // else iscroller.disable();
+
+      if (e.matches) iscroller.enableMouseEvents();
+      else iscroller.disableMouseEvents();
+    });
+
+    // const scroller = new Scroll(el, {
+    //   //disableMouse: false,
+    //   mouseWheel: true,
+    //   bounce: false,
+    //   scrollX: true,
+    //   scrollY: false,
+    //   freeScroll: false,
+    //   probeType: 3,
+    //   keyBindings: true,
+    //   eventPassthrough: 'vertical',
+    //   preventDefault: false,
+    //   useTransition: false,
+    //   //bindToWrapper: true,
+    // });
+
+    // scroller.scroller.translater.hooks.on('translate', (point) => {
+    //   const { x, y } = point;
+    //   headerRef.current.scrollTo(x * -1, y);
+    //   el.scrollTo(x * -1, y);
+    // });
     // scroller.on('translate', (x, y) => {
     //   headerRef.current.scrollTo(x * -1, y);
     //   el.scrollTo(x * -1, y);
     // });
-
-    scroller.scroller.translater.hooks.on('translate', (point) => {
-      const { x, y } = point;
-      headerRef.current.scrollTo(x * -1, y);
-      el.scrollTo(x * -1, y);
-    });
   }, [ref]);
+  const isTouchDevice =
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0;
 
   // Render the UI for your table
   return (
     <Styles>
-      <div style={{ height: 100 }}>Before table</div>
+      <div style={{ height: 100 }}>
+        isTouchDevice:
+        {isTouchDevice.toString()}
+      </div>
       <div {...getTableProps()} className='table sticky' style={{}}>
         <div className={'header'} ref={headerRef}>
           {headerGroups.map((headerGroup) => (
@@ -159,7 +188,14 @@ export const App = () => {
         <div ref={ref} className={'body'} {...getTableBodyProps()}>
           <Rows virtual={true} rows={rows} prepareRow={prepareRow} />
         </div>
+        <div
+          ref={vScroller}
+          style={{ position: 'sticky', bottom: '0', overflow: 'auto' }}
+        >
+          <div style={{ height: 6, overflow: 'scroll', width: '1450px' }}></div>
+        </div>
       </div>
+      <div style={{ height: 1000 }}>after table</div>
     </Styles>
   );
 };

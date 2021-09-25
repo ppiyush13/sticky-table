@@ -1,6 +1,8 @@
+import React from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 export const Rows = ({ virtual, rows, prepareRow }) => {
+  const ref = React.useRef();
   const rowRenderer = (index, hide) => {
     const row = rows[index];
     prepareRow(row);
@@ -27,17 +29,20 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
     );
   };
 
-  return virtual ? (
+  return (
     <>
       <>{rowRenderer(0, true)}</>
-      <Virtuoso
-        useWindowScroll
-        overscan={1000}
-        data={rows}
-        itemContent={rowRenderer}
-      />
+      {virtual ? (
+        <>
+          <Virtuoso
+            useWindowScroll={true}
+            data={rows}
+            itemContent={rowRenderer}
+          />
+        </>
+      ) : (
+        rows.map((row, index) => rowRenderer(index))
+      )}
     </>
-  ) : (
-    rows.map((row, index) => rowRenderer(index))
   );
 };
