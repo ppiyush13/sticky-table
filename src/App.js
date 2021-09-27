@@ -126,11 +126,6 @@ const Styles = styled.div`
     border: 1px solid #ddd;
 
     .tr {
-      :last-child {
-        .td {
-          border-bottom: 0;
-        }
-      }
       &.group {
         background-color: wheat;
         position: sticky;
@@ -143,10 +138,6 @@ const Styles = styled.div`
       border-bottom: 1px solid #ddd;
       border-right: 1px solid #ddd;
       overflow: hidden;
-
-      :last-child {
-        border-right: 0;
-      }
 
       .resizer {
         display: inline-block;

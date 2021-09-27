@@ -1,3 +1,5 @@
+const SENSITIVE_FACTOR = 2; // less is more sensitive, inverse relation
+
 export const momentum = function (
   current,
   start,
@@ -14,7 +16,9 @@ export const momentum = function (
   deceleration = deceleration === undefined ? 0.0006 : deceleration;
 
   destination =
-    current + ((speed * speed) / (2 * deceleration)) * (distance < 0 ? -1 : 1);
+    current +
+    ((speed * speed) / (SENSITIVE_FACTOR * deceleration)) *
+      (distance < 0 ? -1 : 1);
   duration = speed / deceleration;
 
   if (destination < lowerMargin) {
