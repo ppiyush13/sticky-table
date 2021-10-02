@@ -5,6 +5,7 @@ import { App } from './App';
 //import Grid from './tablize';
 import Example from './Example';
 import { Bounded } from './bounded/Bounded';
+import { Experiment } from './Experiment';
 
 ReactDOM.render(
   <React.StrictMode>

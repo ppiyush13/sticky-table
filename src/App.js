@@ -44,7 +44,7 @@ const columns = [
     Header: 'Name',
     accessor: 'name',
     sticky: 'left',
-    width: 100,
+    width: 150,
   },
   {
     id: 'email',
@@ -76,6 +76,67 @@ const columns = [
     accessor: 'email',
     width: 300,
   },
+  {
+    id: 'name4',
+    Header: 'Name 3',
+    accessor: 'name',
+    width: 300,
+  },
+  {
+    id: 'email4',
+    Header: 'email 3',
+    accessor: 'email',
+    width: 300,
+  },
+  {
+    id: 'name5',
+    Header: 'Name 3',
+    accessor: 'name',
+    width: 300,
+  },
+  {
+    id: 'email5',
+    Header: 'email 3',
+    accessor: 'email',
+    width: 300,
+  },
+  {
+    id: 'name6',
+    Header: 'Name 3',
+    accessor: 'name',
+    width: 300,
+  },
+  {
+    id: 'email6',
+    Header: 'email 3',
+    accessor: 'email',
+    width: 300,
+  },
+  {
+    id: 'name7',
+    Header: 'Name 3',
+    accessor: 'name',
+    width: 300,
+  },
+  {
+    id: 'email7',
+    Header: 'email 3',
+    accessor: 'email',
+    width: 300,
+  },
+  {
+    id: 'name8',
+    Header: 'Name 3',
+    accessor: 'name',
+    width: 300,
+  },
+  {
+    id: 'email8',
+    Header: 'email 3',
+    accessor: 'email',
+    sticky: 'right',
+    width: 200,
+  },
 ];
 
 export const App = () => {
@@ -90,6 +151,12 @@ export const App = () => {
       useBlockLayout,
       useSticky
     );
+  const prepareTableRow = (idx) => {
+    prepareRow(rows[idx]);
+    return rows[idx].getRowProps();
+  };
+
+  const width = rows.length ? prepareTableRow(0).style.width : 0;
 
   // Render the UI for your table
   return (
@@ -113,7 +180,7 @@ export const App = () => {
           ref={verticalScrollerRef}
           style={{ position: 'sticky', bottom: '0', overflowX: 'auto' }}
         >
-          <div style={{ height: 1, overflowX: 'auto', width: '1450px' }}></div>
+          <div style={{ height: 1, overflowX: 'auto', width }}></div>
         </div>
       </div>
       <div style={{ height: 500 }}>after table</div>
