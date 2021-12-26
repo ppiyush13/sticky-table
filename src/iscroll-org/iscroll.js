@@ -2,7 +2,7 @@ import IScroll from 'iscroll';
 
 const { addEvent, removeEvent, hasPointer, hasTouch } = IScroll.utils;
 
-export default class extends IScroll {
+export default class MyIscroll extends IScroll {
   constructor(el, options) {
     super(el, options);
 
@@ -45,7 +45,6 @@ export default class extends IScroll {
    */
   _initEvents(remove) {
     const eventType = remove ? removeEvent : addEvent;
-    const target = this.options.bindToWrapper ? this.wrapper : window;
 
     eventType(window, 'orientationchange', this);
     eventType(window, 'resize', this);

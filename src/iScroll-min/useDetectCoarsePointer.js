@@ -19,7 +19,7 @@ export const useDetectCoarsePointer = () => {
 
     /* remove change listener on un-mount */
     return () => mediaQueryList.removeEventListener('change', onChange);
-  }, []);
+  }, [mediaQueryList]);
 
   return hasCoarsePointer;
 };

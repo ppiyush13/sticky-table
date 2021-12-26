@@ -10,7 +10,9 @@ const supportsPassive = (() => {
   try {
     const opts = {};
     Object.defineProperty(opts, 'passive', {
-      get: function () {},
+      get: function () {
+        return undefined;
+      },
     });
     window.addEventListener(EventName, function () {}, opts);
     return true;
@@ -264,6 +266,8 @@ var MouseWheel = /** @class */ (function () {
         break;
       case 'detail' in e:
         wheelDeltaX = wheelDeltaY = (-e.detail / 3) * speed;
+        break;
+      default:
         break;
     }
     wheelDeltaX *= direction * 10;

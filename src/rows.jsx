@@ -2,7 +2,6 @@ import React from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 export const Rows = ({ virtual, rows, prepareRow }) => {
-  const ref = React.useRef();
   const rowRenderer = (index, hide) => {
     const row = rows[index];
     prepareRow(row);
