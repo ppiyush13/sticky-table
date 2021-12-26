@@ -2,7 +2,7 @@
   "name": "sticky-table",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://ppiyush13.github.io/sticky-table",
+  "homepage": "/sticky-table",
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
