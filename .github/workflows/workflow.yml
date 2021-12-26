@@ -9,7 +9,7 @@ on:
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
-  test:
+  build:
     # Name the Job
     name: 'Job: Build and Deploy'
     # Set the type of machine to run on
