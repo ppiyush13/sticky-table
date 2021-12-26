@@ -5,10 +5,10 @@
   "homepage": "/sticky-table",
   "scripts": {
     "build": "react-scripts build",
+    "deploy": "gh-pages -d build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "test": "react-scripts test",
-    "deploy": "gh-pages -d build"
+    "test": "react-scripts test"
   },
   "browserslist": {
     "production": [
