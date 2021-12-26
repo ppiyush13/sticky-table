@@ -5,35 +5,6 @@ import { useSticky } from 'react-table-sticky';
 import { Rows } from './rows';
 import { useVirtualScroll } from './iScroll-min/useVirtualScroll';
 
-let overflow = 'auto';
-const groupData = (data) => {
-  const groupedData = data.reduce((acc, cur) => {
-    if (!acc[cur.age]) acc[cur.age] = [];
-    acc[cur.age].push(cur);
-
-    return acc;
-  }, {});
-
-  const sortedData = Object.entries(groupedData).sort(
-    (entryA, entryB) => entryA[0] - entryB[0]
-  );
-
-  const groupCounts = sortedData.map(([key, values]) => values.length + 1);
-  const tableData = sortedData
-    .map(([key, value]) => {
-      return [
-        {
-          name: key,
-          groupRow: true,
-        },
-        ...value,
-      ];
-    })
-    .flat();
-
-  return { groupCounts, tableData };
-};
-
 const columns = [
   // {
   //   Header: 'Age',
@@ -140,13 +111,12 @@ const columns = [
 ];
 
 export const App = () => {
-  const { tableData, groupCounts } = groupData(data.slice(0, 100));
   const { bodyRef, headerRef, verticalScrollerRef } = useVirtualScroll();
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
         columns,
-        data: tableData,
+        data: data.slice(0, 100),
       },
       useBlockLayout,
       useSticky

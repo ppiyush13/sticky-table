@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom';
 import { App } from './App';
 //import VirtualGrid from './virtual-grid';
 //import Grid from './tablize';
-import Example from './Example';
-import { Bounded } from './bounded/Bounded';
-import { Experiment } from './Experiment';
 
 ReactDOM.render(
   <React.StrictMode>
