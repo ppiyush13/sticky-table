@@ -46,8 +46,6 @@
     "react-scroll-sync": "^0.9.0",
     "react-table": "^7.7.0",
     "react-table-sticky": "^1.1.3",
-    "react-tablize": "^2.1.3",
-    "react-virtual-grid": "^0.1.0",
     "react-virtuoso": "^2.0.4",
     "scroll-sensor": "^0.1.1",
     "smooth-scrolling": "^2.3.12",
