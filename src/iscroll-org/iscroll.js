@@ -3,13 +3,6 @@ import IScroll from 'iscroll';
 const { addEvent, removeEvent, hasPointer, hasTouch } = IScroll.utils;
 
 export default class MyIscroll extends IScroll {
-  constructor(el, options) {
-    super(el, options);
-
-    /** refresh once the instance is created */
-    setTimeout(() => this.refresh(), 0);
-  }
-
   /**
    * Initialise mouse events
    **/
@@ -79,7 +72,7 @@ export default class MyIscroll extends IScroll {
     }
 
     // Execute the scrollEnd event after 400ms the wheel stopped scrolling
-    clearTimeout(this.wheelTimeout);
+    this.wheelTimeout && clearTimeout(this.wheelTimeout);
     this.wheelTimeout = setTimeout(() => {
       if (!this.options.snap) {
         this._execEvent('scrollEnd');
@@ -95,12 +88,6 @@ export default class MyIscroll extends IScroll {
         wheelDeltaX = -e.deltaX;
         wheelDeltaY = -e.deltaY;
       }
-    } else if ('wheelDeltaX' in e) {
-      wheelDeltaX = (e.wheelDeltaX / 120) * this.options.mouseWheelSpeed;
-      wheelDeltaY = (e.wheelDeltaY / 120) * this.options.mouseWheelSpeed;
-    } else if ('wheelDelta' in e) {
-      wheelDeltaX = wheelDeltaY =
-        (e.wheelDelta / 120) * this.options.mouseWheelSpeed;
     } else if ('detail' in e) {
       wheelDeltaX = wheelDeltaY =
         (-e.detail / 3) * this.options.mouseWheelSpeed;
@@ -108,8 +95,8 @@ export default class MyIscroll extends IScroll {
       return;
     }
 
-    wheelDeltaX *= this.options.invertWheelDirection;
-    wheelDeltaY *= this.options.invertWheelDirection;
+    // wheelDeltaX *= this.options.invertWheelDirection;
+    // wheelDeltaY *= this.options.invertWheelDirection;
 
     if (wheelDeltaX === 0 && !this.hasHorizontalScroll) return;
     else if (wheelDeltaX === 0 && !this.hasVerticalScroll) return;
@@ -142,12 +129,10 @@ export default class MyIscroll extends IScroll {
   }
 
   enableMouseEvents() {
-    this.enable = true;
-    this._initMouseEvents();
+    this._initMouseEvents(false);
   }
 
   disableMouseEvents() {
-    this.enable = false;
     this._initMouseEvents(true);
   }
 }
