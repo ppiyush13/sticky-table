@@ -5,6 +5,7 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
   const rowRenderer = (index, hide) => {
     const row = rows[index];
     prepareRow(row);
+
     return (
       <div
         {...row.getRowProps()}

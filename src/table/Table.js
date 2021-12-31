@@ -131,7 +131,7 @@ export const Table = () => {
 
   // Render the UI for your table
   return (
-    <Styles>
+    <TableWrapper>
       <div {...getTableProps()} className='table sticky' style={{}}>
         <div className={'header'} ref={headerRef}>
           {headerGroups.map((headerGroup) => (
@@ -154,11 +154,11 @@ export const Table = () => {
           <div style={{ height: 1, overflowX: 'auto', width }}></div>
         </div>
       </div>
-    </Styles>
+    </TableWrapper>
   );
 };
 
-const Styles = styled.div`
+const TableWrapper = styled.div`
   .table {
     border: 1px solid #ddd;
 
@@ -171,7 +171,7 @@ const Styles = styled.div`
 
     .th,
     .td {
-      padding: 5px;
+      padding: 1rem;
       border-bottom: 1px solid #ddd;
       border-right: 1px solid #ddd;
       overflow: hidden;
