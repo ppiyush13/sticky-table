@@ -2,9 +2,9 @@ import IScroll from 'iscroll';
 
 const { addEvent, removeEvent, hasPointer, hasTouch } = IScroll.utils;
 
-export default class MyIscroll extends IScroll {
+export default class ModifiedIScroll extends IScroll {
   /**
-   * Initialise mouse events
+   * Initialize mouse events
    **/
   _initMouseEvents(remove) {
     const eventType = remove ? removeEvent : addEvent;
@@ -94,9 +94,6 @@ export default class MyIscroll extends IScroll {
     } else {
       return;
     }
-
-    // wheelDeltaX *= this.options.invertWheelDirection;
-    // wheelDeltaY *= this.options.invertWheelDirection;
 
     if (wheelDeltaX === 0 && !this.hasHorizontalScroll) return;
     else if (wheelDeltaX === 0 && !this.hasVerticalScroll) return;

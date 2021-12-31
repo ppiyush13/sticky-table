@@ -3,7 +3,7 @@ import data from './data.json';
 import { useTable, useBlockLayout } from 'react-table';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './rows';
-import { useVirtualScroll } from './iscroll-org/useVirtualScroll';
+import { useVirtualScroll } from './iscroll-modified/useVirtualScroll';
 
 const columns = [
   // {
