@@ -32,25 +32,12 @@ export const useVirtualScroll = () => {
     const virtualScrollInstance = new IScroll(bodyEl, SCROLLER_OPTIONS);
     virtualScrollRef.current = virtualScrollInstance;
 
-    if (virtualScrollInstance.version) {
-      virtualScrollInstance.on('translate', (x, y) => {
-        headerEl.scrollTo(x, y);
-        bodyEl.scrollTo(x, y);
+    virtualScrollInstance.on('translate', (x, y) => {
+      headerEl.scrollTo(x, y);
+      bodyEl.scrollTo(x, y);
 
-        horizontalScrollerEl.scrollLeft = x;
-      });
-    } else {
-      virtualScrollInstance.scroller.translater.hooks.on(
-        'translate',
-        (point) => {
-          const x = point.x * -1;
-          const y = 0;
-          headerEl.scrollTo(x, y);
-          bodyEl.scrollTo(x, y);
-          horizontalScrollerEl.scrollLeft = x;
-        },
-      );
-    }
+      horizontalScrollerEl.scrollLeft = x;
+    });
 
     /** vertical scroll on change */
     const onHorizontalScroll = () => {

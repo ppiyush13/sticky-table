@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useEffect } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
