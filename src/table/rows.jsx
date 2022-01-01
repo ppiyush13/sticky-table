@@ -40,6 +40,25 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
             useWindowScroll={true}
             data={rows}
             itemContent={rowRenderer}
+            components={{
+              ScrollSeekPlaceholder: ({ height }) => {
+                return (
+                  <div
+                    style={{
+                      height,
+                      borderBottom: '1px solid #ddd',
+                      padding: '0.5rem 1rem',
+                    }}
+                  >
+                    loading...
+                  </div>
+                );
+              },
+            }}
+            scrollSeekConfiguration={{
+              enter: (velocity) => Math.abs(velocity) > 500,
+              exit: (velocity) => Math.abs(velocity) < 10,
+            }}
           />
         </>
       ) : (
