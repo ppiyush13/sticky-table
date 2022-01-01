@@ -61,7 +61,11 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
         </div>
         <div
           ref={verticalScrollerRef}
-          style={{ position: 'sticky', bottom: '0', overflowX: 'auto' }}
+          style={{
+            position: 'sticky',
+            bottom: '0',
+            overflowX: 'auto',
+          }}
         >
           <div style={{ height: 1, overflowX: 'auto', width }}></div>
         </div>
