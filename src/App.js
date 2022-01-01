@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { Table } from './table/Table';
 import { useColumns } from './useColumns';
@@ -12,6 +12,10 @@ export const App = () => {
   const onSearchChange = (filterValue) => {
     tableRef.current.setGlobalFilter(filterValue);
   };
+
+  useEffect(() => {
+    tableRef.current.setGlobalFilter('');
+  }, []);
 
   return (
     <Page>

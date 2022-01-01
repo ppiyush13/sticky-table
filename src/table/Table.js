@@ -26,10 +26,6 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
     useGlobalFilter,
   );
 
-  useEffect(() => {
-    setGlobalFilter('');
-  }, []);
-
   useImperativeHandle(ref, () => ({
     setGlobalFilter,
   }));
