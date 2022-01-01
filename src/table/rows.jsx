@@ -20,7 +20,7 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
                 },
               },
             ])}
-            className='td'
+            className="td"
           >
             {cell.render('Cell')}
           </div>

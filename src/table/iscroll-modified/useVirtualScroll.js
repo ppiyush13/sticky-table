@@ -48,7 +48,7 @@ export const useVirtualScroll = () => {
           headerEl.scrollTo(x, y);
           bodyEl.scrollTo(x, y);
           horizontalScrollerEl.scrollLeft = x;
-        }
+        },
       );
     }
 

@@ -23,7 +23,7 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
     },
     useBlockLayout,
     useSticky,
-    useGlobalFilter
+    useGlobalFilter,
   );
 
   useImperativeHandle(ref, () => ({
@@ -40,16 +40,16 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
   /* Render the UI for your table */
   return (
     <>
-      <TableWrapper {...getTableProps()} className='table sticky'>
+      <TableWrapper {...getTableProps()} className="table sticky">
         <div
           className={'header'}
           ref={headerRef}
           style={{ top: stickHeaderTop }}
         >
           {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()} className='tr'>
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
               {headerGroup.headers.map((column) => (
-                <div {...column.getHeaderProps()} className='th'>
+                <div {...column.getHeaderProps()} className="th">
                   {column.render('Header')}
                 </div>
               ))}

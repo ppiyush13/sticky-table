@@ -1,4 +1,4 @@
-import faker from "faker";
+import faker from 'faker';
 
 export const createData = (count) => {
   return new Array(count).fill(1).map(() => ({

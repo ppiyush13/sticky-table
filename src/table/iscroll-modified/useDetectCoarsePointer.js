@@ -5,12 +5,12 @@ export const useDetectCoarsePointer = () => {
   /** create mediaQueryList  */
   const mediaQueryList = useMemo(
     () => window.matchMedia('(pointer: coarse)'),
-    []
+    [],
   );
 
   /* state to hold match result */
   const [hasCoarsePointer, setHasCoarsePointer] = useState(
-    mediaQueryList.matches
+    mediaQueryList.matches,
   );
 
   useEffect(() => {
