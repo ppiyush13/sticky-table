@@ -1,17 +1,13 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
-//import { Rows } from './rows';
+import { Rows } from './rows';
 import { useVirtualScroll } from './iscroll-modified/useVirtualScroll';
 import { globalFilter } from './globalFilter';
-import { useVirtual } from 'react-virtual';
-
-const sizer = () => 35;
 
 export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
   const { bodyRef, headerRef, verticalScrollerRef } = useVirtualScroll();
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -41,40 +37,6 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
 
   const width = rows.length ? prepareTableRow(0).style.width : 0;
 
-  const rowVirtualizer = useVirtual({
-    size: rows.length,
-    parentRef: bodyRef,
-    windowRef: useRef(window),
-    estimateSize: sizer,
-  });
-
-  const rowRenderer = (index, hide) => {
-    const row = rows[index];
-    prepareRow(row);
-
-    return (
-      <div
-        {...row.getRowProps()}
-        className={row.original.groupRow ? 'tr group' : 'tr'}
-      >
-        {row.cells.map((cell) => (
-          <div
-            {...cell.getCellProps([
-              {
-                style: {
-                  display: hide === true ? 'none' : 'flex',
-                },
-              },
-            ])}
-            className="td"
-          >
-            {cell.render('Cell')}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   /* Render the UI for your table */
   return (
     <>
@@ -94,29 +56,8 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
             </div>
           ))}
         </div>
-        <div
-          ref={bodyRef}
-          className={'body'}
-          {...getTableBodyProps({
-            style: { height: rowVirtualizer.totalSize },
-          })}
-        >
-          {/* <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} /> */}
-          {rowVirtualizer.virtualItems.map((virtualRow) => (
-            <div
-              key={virtualRow.key}
-              ref={virtualRow.measureRef}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              <>{rowRenderer(virtualRow.index)}</>
-            </div>
-          ))}
+        <div ref={bodyRef} className={'body'} {...getTableBodyProps()}>
+          <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} />
         </div>
         <div
           ref={verticalScrollerRef}
