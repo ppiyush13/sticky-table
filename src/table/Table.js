@@ -1,20 +1,34 @@
-import { useTable, useBlockLayout } from 'react-table';
+import { forwardRef, useImperativeHandle } from 'react';
+import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './rows';
 import { useVirtualScroll } from './iscroll-modified/useVirtualScroll';
+import { globalFilter } from './globalFilter';
 
-export const Table = ({ columns, data }) => {
+export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
   const { bodyRef, headerRef, verticalScrollerRef } = useVirtualScroll();
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useBlockLayout,
-      useSticky
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    setGlobalFilter,
+  } = useTable(
+    {
+      columns,
+      data,
+      globalFilter: globalFilter,
+    },
+    useBlockLayout,
+    useSticky,
+    useGlobalFilter
+  );
+
+  useImperativeHandle(ref, () => ({
+    setGlobalFilter,
+  }));
 
   const prepareTableRow = (idx) => {
     prepareRow(rows[idx]);
@@ -27,7 +41,11 @@ export const Table = ({ columns, data }) => {
   return (
     <>
       <TableWrapper {...getTableProps()} className='table sticky'>
-        <div className={'header'} ref={headerRef}>
+        <div
+          className={'header'}
+          ref={headerRef}
+          style={{ top: stickHeaderTop }}
+        >
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()} className='tr'>
               {headerGroup.headers.map((column) => (
@@ -50,7 +68,7 @@ export const Table = ({ columns, data }) => {
       </TableWrapper>
     </>
   );
-};
+});
 
 const TableWrapper = styled.div`
   border: 1px solid #ddd;

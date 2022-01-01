@@ -1,19 +1,33 @@
 import styled from 'styled-components/macro';
-import { ReactComponent as SearchIconRaw } from './Search_Icon.svg';
+import { useAsyncDebounce } from 'react-table';
+import { ReactComponent as SearchIcon } from './Search_Icon.svg';
 
-export const Search = () => {
+export const Search = ({ onSearchChange }) => {
+  const onChange = useAsyncDebounce((e) => {
+    onSearchChange(e.target.value);
+  }, 300);
+
   return (
     <SearchWrapper>
-      <SearchText placeholder={'Search by account'} />
-      <SearchIcon width={'30px'}></SearchIcon>
+      <SearchTextWrapper>
+        <SearchText placeholder={'Search by any field'} onChange={onChange} />
+        <SearchIcon width={'2rem'}></SearchIcon>
+      </SearchTextWrapper>
     </SearchWrapper>
   );
 };
 
 const SearchWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
+  padding: 1rem 0;
+`;
+
+const SearchTextWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem 0;
   padding: 0 0.5rem;
   height: 2rem;
   border-bottom: 1px solid grey;
@@ -28,5 +42,3 @@ const SearchText = styled.input.attrs({ type: 'text' })`
   font-family: system-ui;
   font-size: 1rem;
 `;
-
-const SearchIcon = styled(SearchIconRaw)``;

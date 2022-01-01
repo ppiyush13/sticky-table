@@ -1,33 +1,34 @@
+import { useRef } from 'react';
 import styled from 'styled-components/macro';
 import { Table } from './table/Table';
 import { useColumns } from './useColumns';
 import { Search } from './search/Search';
+import { Content } from './Content';
 import data from './data.json';
 
 export const App = () => {
   const columns = useColumns();
+  const tableRef = useRef(null);
+  const onSearchChange = (filterValue) => {
+    tableRef.current.setGlobalFilter(filterValue);
+  };
 
   return (
-    <div style={{ maxWidth: 1024, margin: 'auto' }}>
-      <Content>
-        <ContentText>This content will scroll out of the view</ContentText>
-      </Content>
-      <Search />
-      <Table columns={columns} data={data.slice(200)} />
-      <Content>
-        <ContentText>
-          This content will appear after scrolling table
-        </ContentText>
-      </Content>
-    </div>
+    <Page>
+      <Content>This content will scroll out of the view</Content>
+      <Search onSearchChange={onSearchChange} />
+      <Table
+        ref={tableRef}
+        stickHeaderTop={'4rem'}
+        columns={columns}
+        data={data.slice(200)}
+      />
+      <Content>This content will appear after scrolling table</Content>
+    </Page>
   );
 };
 
-const Content = styled.div`
-  padding: 1rem 0;
-`;
-
-const ContentText = styled.div`
-  background-color: gainsboro;
-  padding: 0.5rem 1rem;
+const Page = styled.main`
+  max-width: 72rem;
+  margin: auto;
 `;
