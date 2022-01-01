@@ -57,7 +57,7 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
           ))}
         </div>
         <div ref={bodyRef} className={'body'} {...getTableBodyProps()}>
-          <Rows virtual={true} rows={rows} prepareRow={prepareRow} />
+          <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} />
         </div>
         <div
           ref={verticalScrollerRef}
