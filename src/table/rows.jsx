@@ -50,7 +50,7 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
                       padding: '0.5rem 1rem',
                     }}
                   >
-                    loading...
+                    loading ...
                   </div>
                 );
               },

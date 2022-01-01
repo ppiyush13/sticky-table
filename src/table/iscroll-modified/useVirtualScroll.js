@@ -20,7 +20,7 @@ export const useVirtualScroll = () => {
   const bodyRef = useRef();
   const headerRef = useRef();
   const verticalScrollerRef = useRef();
-  const virutalScrollRef = useRef();
+  const virtualScrollRef = useRef();
 
   useEffect(() => {
     /** html elements */
@@ -30,7 +30,7 @@ export const useVirtualScroll = () => {
 
     /** create virtual scroller instance */
     const virtualScrollInstance = new IScroll(bodyEl, SCROLLER_OPTIONS);
-    virutalScrollRef.current = virtualScrollInstance;
+    virtualScrollRef.current = virtualScrollInstance;
 
     if (virtualScrollInstance.version) {
       virtualScrollInstance.on('translate', (x, y) => {
@@ -68,8 +68,11 @@ export const useVirtualScroll = () => {
   }, []);
 
   useEffect(() => {
-    if (hasCoarsePointer) virutalScrollRef.current.enableMouseEvents();
-    else virutalScrollRef.current.disableMouseEvents();
+    if (hasCoarsePointer) virtualScrollRef.current.enableMouseEvents();
+    else {
+      alert('disalbe');
+      virtualScrollRef.current.disableMouseEvents();
+    }
   }, [hasCoarsePointer]);
 
   return {
