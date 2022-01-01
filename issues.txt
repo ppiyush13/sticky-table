@@ -1,0 +1,11 @@
+1. Alignment issue: Headers get misaligned
+    - Reload
+    - Scroll to right, ensure column border is not aligned 
+    - Search PLA and then remove
+    - Now scroll to bottom ensuring white space
+
+2. Mobile search issue: Horizontal scroll stops working
+    - Reload
+    - Enter P
+    - Close keypad 
+    - Try to scroll right
