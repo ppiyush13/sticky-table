@@ -1,10 +1,5 @@
 import { forwardRef, useImperativeHandle, useEffect } from 'react';
-import {
-  useTable,
-  useBlockLayout,
-  useGlobalFilter,
-  useSortBy,
-} from 'react-table';
+import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './rows';
@@ -25,18 +20,14 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
       columns,
       data,
       globalFilter,
-      initialState: {
-        sortBy: [{ id: 'transactionType' }],
-      },
     },
     useBlockLayout,
     useSticky,
     useGlobalFilter,
-    useSortBy,
   );
 
   useEffect(() => {
-    //setGlobalFilter('');
+    setGlobalFilter('');
   }, []);
 
   useImperativeHandle(ref, () => ({

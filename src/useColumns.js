@@ -4,7 +4,6 @@ const columns = [
     accessor: 'transactionType',
     sticky: 'left',
     width: 150,
-    sortType: 'string',
   },
   {
     Header: 'Account',
