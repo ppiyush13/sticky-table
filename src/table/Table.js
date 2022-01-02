@@ -57,6 +57,7 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
           ))}
         </div>
         <div ref={bodyRef} className={'body'} {...getTableBodyProps()}>
+          <div style={{ width }}></div>
           <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} />
         </div>
         <div

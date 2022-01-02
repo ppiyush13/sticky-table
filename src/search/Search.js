@@ -11,7 +11,7 @@ export const Search = ({ onSearchChange }) => {
     <SearchWrapper>
       <SearchTextWrapper>
         <SearchText placeholder={'Search by any field'} onChange={onChange} />
-        <SearchIcon width={'2rem'}></SearchIcon>
+        <SearchIcon width={'1.5rem'}></SearchIcon>
       </SearchTextWrapper>
     </SearchWrapper>
   );

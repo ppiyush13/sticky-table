@@ -2,7 +2,7 @@ import React from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 export const Rows = ({ virtual, rows, prepareRow }) => {
-  const rowRenderer = (index, hide) => {
+  const rowRenderer = (index) => {
     const row = rows[index];
     prepareRow(row);
 
@@ -12,16 +12,7 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
         className={row.original.groupRow ? 'tr group' : 'tr'}
       >
         {row.cells.map((cell) => (
-          <div
-            {...cell.getCellProps([
-              {
-                style: {
-                  display: hide === true ? 'none' : 'flex',
-                },
-              },
-            ])}
-            className="td"
-          >
+          <div {...cell.getCellProps()} className="td">
             {cell.render('Cell')}
           </div>
         ))}
@@ -33,7 +24,6 @@ export const Rows = ({ virtual, rows, prepareRow }) => {
     <>
       {virtual ? (
         <>
-          {rowRenderer(0, true)}
           <Virtuoso
             overscan={1000}
             defaultItemHeight={35}

@@ -56,9 +56,7 @@ export const useVirtualScroll = () => {
 
   useEffect(() => {
     if (hasCoarsePointer) virtualScrollRef.current.enableMouseEvents();
-    else {
-      virtualScrollRef.current.disableMouseEvents();
-    }
+    else virtualScrollRef.current.disableMouseEvents();
   }, [hasCoarsePointer]);
 
   return {
