@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/sticky-table/static/js/main.27ca98da.js",
+    "main.js": "/sticky-table/static/js/main.3016fd5b.js",
     "static/media/Search_Icon.svg": "/sticky-table/static/media/Search_Icon.116db3fe814c3da95c40ed1f09d4e08d.svg",
     "index.html": "/sticky-table/index.html",
-    "main.27ca98da.js.map": "/sticky-table/static/js/main.27ca98da.js.map"
+    "main.3016fd5b.js.map": "/sticky-table/static/js/main.3016fd5b.js.map"
   },
   "entrypoints": [
-    "static/js/main.27ca98da.js"
+    "static/js/main.3016fd5b.js"
   ]
 }
