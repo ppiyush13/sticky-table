@@ -1,4 +1,4 @@
-import IScroll from 'iscroll';
+import IScroll from 'iscroll/build/iscroll-lite';
 
 const { addEvent, removeEvent, hasPointer, hasTouch } = IScroll.utils;
 
