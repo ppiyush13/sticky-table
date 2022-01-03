@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle } from 'react';
 import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
-import { Rows } from './rows';
+import { Rows } from './Rows';
 import { useVirtualScroll } from './use-virtual-scroll';
 import { globalFilter } from './globalFilter';
 
