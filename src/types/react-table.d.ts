@@ -61,14 +61,9 @@ declare module 'react-table' {
   > extends UseFiltersColumnProps<D>,
       UseSortByColumnProps<D> {}
 
-  export interface UseRowDownloadedProp {
-    isDownloaded: boolean;
-  }
-
   export interface Row<D extends object = {}>
     extends UseExpandedRowProps<D>,
       UseGroupByRowProps<D>,
       UseRowSelectRowProps<D>,
-      UseRowStateRowProps<D>,
-      UseRowDownloadedProp {}
+      UseRowStateRowProps<D> {}
 }

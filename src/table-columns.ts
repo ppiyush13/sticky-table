@@ -1,11 +1,11 @@
 import { Column } from 'react-table';
 
 export interface Finance {
-  transactionType: 'deposit' | 'payment' | 'withdraw';
-  account: number;
-  routingNumber: number;
-  mask: number;
-  amount: number;
+  transactionType: string; //'deposit' | 'payment' | 'withdraw';
+  account: string;
+  routingNumber: string;
+  mask: string;
+  amount: string;
   currencyCode: string;
   currencySymbol: string;
   bitcoinAddress: string;

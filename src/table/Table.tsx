@@ -1,95 +1,99 @@
-import { CSSProperties, forwardRef, useImperativeHandle } from 'react';
+import {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { useTable, useBlockLayout, useGlobalFilter, Column } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './Rows';
 import { useVirtualScroll } from './use-virtual-scroll';
-import { globalFilter } from './globalFilter';
+import { useStringFilter } from './globalFilter';
 
-interface TablePropsType<D extends object = {}> {
-  columns: Column<D>[];
-  data: D[];
+export interface TablePropsType<T extends object> {
+  columns: Column<T>[];
+  data: T[];
   stickHeaderTop: CSSProperties['top'];
 }
 
-interface TableRefType {
+export interface TableRefType {
   setGlobalFilter: (filterValue: string) => void;
 }
 
-export const Table = forwardRef<TableRefType, TablePropsType>(
-  ({ columns, data, stickHeaderTop }, ref) => {
-    const { bodyRef, headerRef, horizontalScrollerRef } = useVirtualScroll();
-    const {
-      getTableProps,
-      getTableBodyProps,
-      headerGroups,
-      rows,
-      prepareRow,
-      setGlobalFilter,
-    } = useTable(
-      {
-        columns,
-        data,
-        globalFilter,
-      },
-      useBlockLayout,
-      useSticky,
-      useGlobalFilter,
-    );
+export const TableComponent = <D extends object>(
+  { columns, data, stickHeaderTop }: TablePropsType<D>,
+  ref: ForwardedRef<TableRefType>,
+) => {
+  const { bodyRef, headerRef, horizontalScrollerRef } = useVirtualScroll();
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    setGlobalFilter,
+  } = useTable(
+    {
+      columns,
+      data,
+      globalFilter: useStringFilter<D>(),
+    },
+    useBlockLayout,
+    useSticky,
+    useGlobalFilter,
+  );
 
-    useImperativeHandle(ref, () => ({
-      setGlobalFilter,
-    }));
+  useImperativeHandle(ref, () => ({
+    setGlobalFilter,
+  }));
 
-    const prepareTableRow = (idx: number) => {
-      prepareRow(rows[idx]);
-      return rows[idx].getRowProps();
-    };
+  const prepareTableRow = (idx: number) => {
+    prepareRow(rows[idx]);
+    return rows[idx].getRowProps();
+  };
 
-    const width = rows.length ? prepareTableRow(0).style?.width : 0;
+  const width = rows.length ? prepareTableRow(0).style?.width : 0;
 
-    /* Render the UI for your table */
-    return (
-      <>
-        <TableWrapper {...getTableProps()} className="table sticky">
-          <div
-            className={'header'}
-            ref={headerRef}
-            style={{ top: stickHeaderTop }}
-          >
-            {headerGroups.map((headerGroup) => (
-              <div {...headerGroup.getHeaderGroupProps()} className="tr">
-                {headerGroup.headers.map((column) => (
-                  <div {...column.getHeaderProps()} className="th">
-                    {column.render('Header')}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div ref={bodyRef} className={'body'} {...getTableBodyProps()}>
-            <div style={{ width }}></div>
-            <Rows
-              virtual={rows.length > 0}
-              rows={rows}
-              prepareRow={prepareRow}
-            />
-          </div>
-          <div
-            ref={horizontalScrollerRef}
-            style={{
-              position: 'sticky',
-              bottom: '0',
-              overflowX: 'auto',
-            }}
-          >
-            <div style={{ height: 1, overflowX: 'auto', width }}></div>
-          </div>
-        </TableWrapper>
-      </>
-    );
-  },
-);
+  /* Render the UI for your table */
+  return (
+    <>
+      <TableWrapper {...getTableProps()} className="table sticky">
+        <div
+          className={'header'}
+          ref={headerRef}
+          style={{ top: stickHeaderTop }}
+        >
+          {headerGroups.map((headerGroup) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              {headerGroup.headers.map((column) => (
+                <div {...column.getHeaderProps()} className="th">
+                  {column.render('Header')}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div ref={bodyRef} className={'body'} {...getTableBodyProps()}>
+          <div style={{ width }}></div>
+          <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} />
+        </div>
+        <div
+          ref={horizontalScrollerRef}
+          style={{
+            position: 'sticky',
+            bottom: '0',
+            overflowX: 'auto',
+          }}
+        >
+          <div style={{ height: 1, overflowX: 'auto', width }}></div>
+        </div>
+      </TableWrapper>
+    </>
+  );
+};
+
+export const Table = forwardRef(TableComponent);
 
 const TableWrapper = styled.div`
   border: 1px solid #ddd;
