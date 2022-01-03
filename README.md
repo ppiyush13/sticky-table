@@ -9,11 +9,8 @@ https://ppiyush13.github.io/sticky-table/
 ## Features
 
 - An overflowing table of columns and rows with sticky headings on a page.
-
 - Headings stick to the top while scrolling on the document window.
-
 - Able to scroll horizontally within the overflowing container with first column being sticky.
-
 - Handle huge data without lag
 
 ## Install
