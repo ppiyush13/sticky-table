@@ -2,7 +2,7 @@ import styled from 'styled-components/macro';
 import { useAsyncDebounce } from 'react-table';
 import { ReactComponent as SearchIcon } from './Search_Icon.svg';
 
-export const Search = ({ onSearchChange }) => {
+export const Search = ({ onSearchChange }: { onSearchChange: Function }) => {
   const onChange = useAsyncDebounce((e) => {
     onSearchChange(e.target.value);
   }, 300);
