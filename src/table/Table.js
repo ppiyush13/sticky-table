@@ -3,11 +3,11 @@ import { useTable, useBlockLayout, useGlobalFilter } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './rows';
-import { useVirtualScroll } from './iscroll-modified/useVirtualScroll';
+import { useVirtualScroll } from './use-virtual-scroll';
 import { globalFilter } from './globalFilter';
 
 export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
-  const { bodyRef, headerRef, verticalScrollerRef } = useVirtualScroll();
+  const { bodyRef, headerRef, horizontalScrollerRef } = useVirtualScroll();
   const {
     getTableProps,
     getTableBodyProps,
@@ -61,7 +61,7 @@ export const Table = forwardRef(({ columns, data, stickHeaderTop }, ref) => {
           <Rows virtual={rows.length > 0} rows={rows} prepareRow={prepareRow} />
         </div>
         <div
-          ref={verticalScrollerRef}
+          ref={horizontalScrollerRef}
           style={{
             position: 'sticky',
             bottom: '0',

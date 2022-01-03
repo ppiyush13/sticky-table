@@ -14,7 +14,7 @@ export const useDetectCoarsePointer = () => {
   );
 
   useEffect(() => {
-    const onChange = (e) => setHasCoarsePointer(e.matches);
+    const onChange = (e: MediaQueryListEvent) => setHasCoarsePointer(e.matches);
 
     /* register change listener */
     mediaQueryList.addEventListener(CHANGE_EVENT, onChange);
