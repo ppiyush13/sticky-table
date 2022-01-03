@@ -1,4 +1,4 @@
-import { CSSProperties } from 'styled-components/macro';
+import { CSSProperties } from 'react';
 import {
   UseFiltersOptions,
   UseFiltersInstanceProps,

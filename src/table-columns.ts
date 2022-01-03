@@ -1,4 +1,24 @@
-const columns = [
+import { Column } from 'react-table';
+
+export interface Finance {
+  transactionType: 'deposit' | 'payment' | 'withdraw';
+  account: number;
+  routingNumber: number;
+  mask: number;
+  amount: number;
+  currencyCode: string;
+  currencySymbol: string;
+  bitcoinAddress: string;
+  litecoinAddress: string;
+  ethereumAddress: string;
+  creditCardNumber: string;
+  creditCardCVV: string;
+  iban: string;
+  bic: string;
+  accountName: string;
+}
+
+export const columns: Column<Finance>[] = [
   {
     Header: 'Transaction Type',
     accessor: 'transactionType',
@@ -72,7 +92,3 @@ const columns = [
     width: 200,
   },
 ];
-
-export const useColumns = () => {
-  return columns;
-};

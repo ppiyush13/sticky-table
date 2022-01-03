@@ -1,13 +1,12 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { Table } from './table/Table';
-import { useColumns } from './useColumns';
+import { columns } from './table-columns';
 import { Search } from './search/Search';
 import { Content } from './Content';
-import data from './data.json';
+import data from './table-data.json';
 
 export const App = () => {
-  const columns = useColumns();
   const tableRef = useRef(null);
   const onSearchChange = (filterValue) => {
     tableRef.current.setGlobalFilter(filterValue);

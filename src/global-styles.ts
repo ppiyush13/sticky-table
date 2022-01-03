@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components/macro';
 
-export const GlobalStyles = createGlobalStyle`\
+export const GlobalStyles = createGlobalStyle`
   html {
     font-family: system-ui; 
     font-size: 14px;
