@@ -6,7 +6,7 @@ export default class ModifiedIScroll extends IScroll {
   /**
    * Initialize mouse events
    **/
-  _initMouseEvents(remove) {
+  private _initMouseEvents(remove: boolean) {
     const eventType = remove ? removeEvent : addEvent;
     const target = this.options.bindToWrapper ? this.wrapper : window;
 
@@ -36,7 +36,7 @@ export default class ModifiedIScroll extends IScroll {
    * Initializes events
    * @override
    */
-  _initEvents(remove) {
+  private _initEvents(remove: boolean) {
     const eventType = remove ? removeEvent : addEvent;
 
     eventType(window, 'orientationchange', this);
@@ -51,13 +51,13 @@ export default class ModifiedIScroll extends IScroll {
   /**
    * Translate virtual scroll
    */
-  _translate(x, y) {
+  private _translate(x: number, y: number) {
     this.x = x;
     this.y = y;
-    this._execEvent('translate', x * -1, y);
+    this._execEvent('translate', { x: x * -1, y });
   }
 
-  _wheel(e) {
+  private _wheel(e: WheelEvent) {
     if (!this.enabled) {
       return;
     }

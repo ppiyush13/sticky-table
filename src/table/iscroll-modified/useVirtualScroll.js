@@ -32,7 +32,7 @@ export const useVirtualScroll = () => {
     const virtualScrollInstance = new IScroll(bodyEl, SCROLLER_OPTIONS);
     virtualScrollRef.current = virtualScrollInstance;
 
-    virtualScrollInstance.on('translate', (x, y) => {
+    virtualScrollInstance.on('translate', ({ x, y }) => {
       headerEl.scrollTo(x, y);
       bodyEl.scrollTo(x, y);
 
