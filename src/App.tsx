@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { Table, TableRefType } from './table';
-import { columns, Finance } from './table-columns';
+import { columns, Finance } from './tableColumns';
 import { Search } from './search/Search';
 import { Content } from './Content';
-import data from './table-data.json';
+import data from './tableData.json';
 
 export const App = () => {
   const tableRef = useRef<TableRefType>(null);

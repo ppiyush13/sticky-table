@@ -8,8 +8,8 @@ import { useTable, useBlockLayout, useGlobalFilter, Column } from 'react-table';
 import styled from 'styled-components/macro';
 import { useSticky } from 'react-table-sticky';
 import { Rows } from './Rows';
-import { useVirtualScroll } from './use-virtual-scroll';
-import { useStringFilter } from './globalFilter';
+import { useVirtualScroll } from './useVirtualScroll';
+import { useStringFilter } from './useStringFilter';
 
 export interface TablePropsType<T extends object> {
   columns: Column<T>[];
