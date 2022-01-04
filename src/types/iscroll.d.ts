@@ -25,7 +25,7 @@ type ManageEvent = (
   capture?: boolean,
 ) => void;
 
-declare module 'iscroll/build/iscroll-lite' {
+declare module 'iscroll' {
   export = class IScroll {
     static utils: {
       hasPointer: boolean;
